@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluently - Intermediate English Mastery & Practice Studio</title>
+  <meta name="description" content="Master intermediate English writing, speaking, and reading with real-time AI grammar correction, pronunciation scoring, and interactive dialogue.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/modules.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 8 6 6"></path>
+            <path d="m4 14 6-6 2-3"></path>
+            <path d="M2 5h12"></path>
+            <path d="M7 2h1"></path>
+            <path d="m22 22-5-10-5 10"></path>
+            <path d="M14 18h6"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>Fluently<span>.ai</span></h2>
+          <p>Intermediate Coach</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="writing" id="nav-writing">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Writing Lab</span>
+          <span class="badge">Feedback</span>
+        </button>
+        <button class="nav-item" data-tab="speaking" id="nav-speaking">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+          <span>Speaking Studio</span>
+          <span class="badge live">Mic Live</span>
+        </button>
+        <button class="nav-item" data-tab="reading" id="nav-reading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span>Reading Lounge</span>
+        </button>
+        <button class="nav-item" data-tab="dialogue" id="nav-dialogue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Roleplay Chat</span>
+        </button>
+        <button class="nav-item" data-tab="vocabulary" id="nav-vocabulary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+          <span>Power Vocab (B2→C1)</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="streak-widget">
+          <div class="streak-fire">🔥</div>
+          <div>
+            <div class="streak-count" id="streak-days">4 Day Streak</div>
+            <div class="streak-sub">Intermediate Goal: 20 min/day</div>
+          </div>
+        </div>
+        <button class="settings-btn" id="btn-open-settings" title="Settings & AI Key">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Preferences & AI</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-viewport">
+      <!-- Header Bar -->
+      <header class="top-header">
+        <div class="header-search">
+          <span class="user-level-tag">Level: <strong>B1/B2 Intermediate</strong></span>
+        </div>
+        <div class="header-actions">
+          <div class="quick-stat">
+            <span class="stat-label">Words Checked:</span>
+            <span class="stat-num" id="total-words-stat">1,480</span>
+          </div>
+          <div class="quick-stat">
+            <span class="stat-label">Speaking Accuracy:</span>
+            <span class="stat-num highlight" id="avg-speaking-stat">91%</span>
+          </div>
+          <button class="btn-theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+        </div>
+      </header>
+
+      <div class="content-scrollable">
+        
+        <!-- TAB 1: DASHBOARD -->
+        <section class="tab-pane active" id="pane-dashboard">
+          <div class="hero-banner">
+            <div class="hero-content">
+              <span class="hero-chip">🎯 Tailored for Intermediate English Learners</span>
+              <h1>Refine your grammar, speak with confidence, read fluently.</h1>
+              <p>Move beyond intermediate hurdles (vocabulary traps, tense consistency, hesitation, and sentence variety) with real-time feedback and smart practice engines.</p>
+              <div class="hero-cta-group">
+                <button class="btn btn-primary" onclick="app.switchTab('writing')">
+                  ✍️ Start Writing Session
+                </button>
+                <button class="btn btn-secondary" onclick="app.switchTab('speaking')">
+                  🎙️ Practice Speaking
+                </button>
+              </div>
+            </div>
+            <div class="hero-graphic">
+              <div class="radar-card">
+                <div class="radar-header">Skill Progression</div>
+                <div class="skill-meter">
+                  <div class="skill-info"><span>Sentence Structure</span><span>78%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" style="width: 78%;"></div></div>
+                </div>
+                <div class="skill-meter">
+                  <div class="skill-info"><span>Pronunciation & Flow</span><span>84%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" style="width: 84%;"></div></div>
+                </div>
+                <div class="skill-meter">
+                  <div class="skill-info"><span>Advanced Vocabulary (B2/C1)</span><span>68%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" style="width: 68%;"></div></div>
+                </div>
+                <div class="skill-meter">
+                  <div class="skill-info"><span>Reading Comprehension</span><span>90%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" style="width: 90%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Practice Hub Cards -->
+          <div class="section-title">
+            <h2>Select Your Practice Track</h2>
+            <p>Pick a core skill to sharpen right now</p>
+          </div>
+
+          <div class="cards-grid">
+            <div class="feature-card" onclick="app.switchTab('writing')">
+              <div class="card-icon writing-glow">✍️</div>
+              <div class="card-tag">Grammar & Structure</div>
+              <h3>Writing Lab</h3>
+              <p>Write essays, emails, or daily thoughts. Get instant correction for grammar, redundant words, awkward phrasing, and tone upgrades.</p>
+              <span class="card-link">Enter Lab &rarr;</span>
+            </div>
+
+            <div class="feature-card" onclick="app.switchTab('speaking')">
+              <div class="card-icon speaking-glow">🎙️</div>
+              <div class="card-tag">Speech Recognition</div>
+              <h3>Speaking Studio</h3>
+              <p>Read natural intermediate sentences aloud or practice spontaneous impromptu speaking. Real-time pronunciation and fluency scoring.</p>
+              <span class="card-link">Start Speaking &rarr;</span>
+            </div>
+
+            <div class="feature-card" onclick="app.switchTab('reading')">
+              <div class="card-icon reading-glow">📖</div>
+              <div class="card-tag">Comprehension & Audio</div>
+              <h3>Reading Lounge</h3>
+              <p>Engaging B1-B2 graded articles with instant one-click dictionary, native accent audio narration, and comprehension check quizzes.</p>
+              <span class="card-link">Explore Texts &rarr;</span>
+            </div>
+
+            <div class="feature-card" onclick="app.switchTab('dialogue')">
+              <div class="card-icon dialogue-glow">💬</div>
+              <div class="card-tag">Roleplay Simulations</div>
+              <h3>Interactive Roleplay</h3>
+              <p>Realistic conversational scenarios (job interview, café, client meeting) with instant sentence fixes and suggested natural responses.</p>
+              <span class="card-link">Launch Roleplay &rarr;</span>
+            </div>
+          </div>
+
+          <!-- Daily Recommended Challenge -->
+          <div class="challenge-card">
+            <div class="challenge-badge">Daily Intermediate Challenge</div>
+            <div class="challenge-body">
+              <div>
+                <h3>"Expressing Opinions Politely in Professional Settings"</h3>
+                <p>Learn to replace "I think this is bad" with "I have some reservations regarding this approach".</p>
+              </div>
+              <button class="btn btn-primary" onclick="writingCoach.loadPrompt('Explain why remote work is better than office work for you, using at least 3 formal transition words (e.g. Furthermore, Consequently, In addition).')">
+                Take Challenge
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: WRITING LAB -->
+        <section class="tab-pane" id="pane-writing">
+          <div class="module-header">
+            <div>
+              <h2>Writing Lab & AI Grammar Reviewer</h2>
+              <p>Detect grammar slips, tense inconsistencies, weak vocabulary, and Indian/ESL idioms.</p>
+            </div>
+            <div class="module-actions">
+              <button class="btn btn-outline" id="btn-writing-prompt">🎲 New Writing Topic</button>
+              <button class="btn btn-outline" id="btn-sample-writing">Load Sample Essay</button>
+              <button class="btn btn-primary" id="btn-analyze-writing">🔍 Analyze & Correct</button>
+            </div>
+          </div>
+
+          <!-- Prompt Prompt Banner if selected -->
+          <div class="prompt-banner" id="active-prompt-banner" style="display:none;">
+            <span class="prompt-tag">Active Prompt:</span>
+            <span id="active-prompt-text"></span>
+            <button class="btn-close-chip" onclick="document.getElementById('active-prompt-banner').style.display='none'">✕</button>
+          </div>
+
+          <div class="writing-layout">
+            <!-- Left: Text Editor -->
+            <div class="editor-pane">
+              <div class="editor-toolbar">
+                <div class="toolbar-group">
+                  <span class="word-counter"><strong id="editor-word-count">0</strong> words | <strong id="editor-char-count">0</strong> chars</span>
+                </div>
+                <div class="toolbar-group">
+                  <button class="tool-btn" id="btn-tone-formal" title="Formal Tone">👔 Professional</button>
+                  <button class="tool-btn" id="btn-tone-casual" title="Casual Tone">☕ Casual</button>
+                  <button class="tool-btn" id="btn-clear-editor" title="Clear Text">🗑️ Clear</button>
+                </div>
+              </div>
+              <textarea id="writing-input" placeholder="Type or paste your English text here... (e.g., an email, essay, diary entry, or opinion). The analyzer will highlight errors, suggest corrections, and provide an upgraded C1 version!"></textarea>
+              
+              <div class="editor-quick-prompts">
+                <span class="quick-label">Try quick topics:</span>
+                <button class="chip-btn" onclick="writingCoach.loadPrompt('Describe your proudest professional or personal achievement and what it taught you.')">🏆 My Proudest Achievement</button>
+                <button class="chip-btn" onclick="writingCoach.loadPrompt('Write a formal email asking your manager for permission to attend a 3-day tech workshop.')">📧 Formal Workshop Request</button>
+                <button class="chip-btn" onclick="writingCoach.loadPrompt('Do you believe artificial intelligence will replace human jobs or augment them? Provide 2 reasons.')">🤖 AI in the Workplace</button>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Feedback & Breakdown -->
+            <div class="feedback-pane">
+              <!-- Score Overview -->
+              <div class="score-card">
+                <div class="overall-score">
+                  <div class="circle-chart" id="writing-score-circle">
+                    <span id="writing-score-val">--</span>
+                  </div>
+                  <div class="score-label">
+                    <div id="writing-grade-label">Ready to analyze</div>
+                    <small>Overall Fluency Score</small>
+                  </div>
+                </div>
+
+                <div class="mini-metrics">
+                  <div class="metric-item">
+                    <span>Grammar & Syntax</span>
+                    <strong id="metric-grammar">--</strong>
+                  </div>
+                  <div class="metric-item">
+                    <span>Sentence Variety</span>
+                    <strong id="metric-variety">--</strong>
+                  </div>
+                  <div class="metric-item">
+                    <span>Vocabulary Level</span>
+                    <strong id="metric-vocab">--</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Corrections Tabs -->
+              <div class="feedback-tabs">
+                <button class="fb-tab active" data-fbtab="corrections">Corrections & Rules (<span id="count-issues">0</span>)</button>
+                <button class="fb-tab" data-fbtab="polished">Polished Version (C1)</button>
+                <button class="fb-tab" data-fbtab="vocab-suggestions">Vocab Upgrades</button>
+              </div>
+
+              <div class="fb-tab-content">
+                <!-- Corrections list -->
+                <div class="fb-pane active" id="fb-pane-corrections">
+                  <div class="issues-list" id="issues-container">
+                    <div class="empty-state">
+                      <div class="empty-icon">📝</div>
+                      <p>Type your paragraph on the left and click <strong>"Analyze & Correct"</strong> to inspect grammar, sentence structure, and awkward phrasing.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Polished rewritten version -->
+                <div class="fb-pane" id="fb-pane-polished">
+                  <div class="polished-box">
+                    <div class="polished-header">
+                      <span>✨ Enhanced Native-Speaker Revision:</span>
+                      <button class="btn-copy" id="btn-copy-polished">📋 Copy</button>
+                    </div>
+                    <div class="polished-text" id="polished-text-container">
+                      <p class="text-muted">Polished text will appear here once analyzed.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vocab suggestions -->
+                <div class="fb-pane" id="fb-pane-vocab-suggestions">
+                  <div class="vocab-upgrades-list" id="vocab-upgrades-container">
+                    <p class="text-muted">High-impact B2 &rarr; C1 synonym upgrades will be shown here.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: SPEAKING STUDIO -->
+        <section class="tab-pane" id="pane-speaking">
+          <div class="module-header">
+            <div>
+              <h2>Speaking Studio & Pronunciation Coach</h2>
+              <p>Practice speaking with real-time Speech Recognition, syllable clarity, and live transcription feedback.</p>
+            </div>
+            <div class="module-actions">
+              <div class="speaking-mode-toggle">
+                <button class="mode-btn active" id="btn-mode-read">📖 Read-Aloud Drills</button>
+                <button class="mode-btn" id="btn-mode-impromptu">🎙️ Free Speaking Practice</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="speaking-layout">
+            <!-- Mode 1: Read Aloud Prompts -->
+            <div class="speaking-card" id="speaking-read-section">
+              <div class="prompt-navigation">
+                <div class="drill-category-select">
+                  <label for="drill-topic-select">Drill Topic:</label>
+                  <select id="drill-topic-select" class="custom-select">
+                    <option value="business">Professional Meetings & Presentations</option>
+                    <option value="daily">Everyday Casual Conversations</option>
+                    <option value="idioms">Common English Idioms & Collocations</option>
+                    <option value="tongue_twisters">Pronunciation & Clarity Drills</option>
+                  </select>
+                </div>
+                <div class="drill-nav-buttons">
+                  <button class="btn btn-sm btn-outline" id="btn-prev-drill">◀ Prev</button>
+                  <span id="drill-counter" class="drill-counter-text">1 / 10</span>
+                  <button class="btn btn-sm btn-outline" id="btn-next-drill">Next ▶</button>
+                </div>
+              </div>
+
+              <div class="target-sentence-box">
+                <span class="sentence-instruction">Read this sentence aloud clearly:</span>
+                <h3 class="target-text" id="target-sentence-text">
+                  "Although we encountered several unforeseen obstacles during the rollout, our proactive communication ensured customer satisfaction."
+                </h3>
+                <div class="target-sentence-actions">
+                  <button class="btn btn-sm btn-audio" id="btn-listen-target">
+                    🔊 Listen to Native Audio
+                  </button>
+                  <span class="difficulty-tag">Intermediate B2</span>
+                </div>
+              </div>
+
+              <!-- Live Speech Recognition Area -->
+              <div class="mic-interaction-hub">
+                <div class="visualizer-wrapper">
+                  <canvas id="audio-visualizer" width="400" height="70"></canvas>
+                </div>
+
+                <div class="mic-controls">
+                  <button class="mic-btn" id="btn-toggle-mic">
+                    <svg class="mic-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                      <line x1="12" x2="12" y1="19" y2="22"/>
+                    </svg>
+                    <span id="mic-status-label">Click to Start Speaking</span>
+                  </button>
+                </div>
+
+                <!-- Real-time transcript feedback -->
+                <div class="live-transcript-box">
+                  <div class="transcript-header">
+                    <span>What we heard:</span>
+                    <span id="speech-accuracy-badge" class="accuracy-badge">Accuracy: --%</span>
+                  </div>
+                  <div class="transcript-diff" id="speech-diff-output">
+                    <span class="text-placeholder">Your voice will be transcribed here in real-time...</span>
+                  </div>
+                </div>
+
+                <!-- Pronunciation suggestions -->
+                <div class="speech-tips-box" id="speech-tips-container" style="display:none;">
+                  <div class="tips-title">💡 Pronunciation & Pace Advice:</div>
+                  <div class="tips-content" id="speech-tips-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Free Speaking / Impromptu Prompt Card (Hidden by default or toggled) -->
+            <div class="speaking-card" id="speaking-impromptu-section" style="display:none;">
+              <div class="impromptu-prompt-card">
+                <span class="prompt-badge">1-Minute Impromptu Speech</span>
+                <h3 id="impromptu-question">"What is one technology invention you cannot live without, and why?"</h3>
+                <p>Press Record, speak continuously for 45-60 seconds. Fluently will evaluate your speech flow, grammar consistency, and vocabulary variety.</p>
+                <div class="timer-display" id="speaking-timer">00:00</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: READING LOUNGE -->
+        <section class="tab-pane" id="pane-reading">
+          <div class="module-header">
+            <div>
+              <h2>Reading Lounge & Comprehension</h2>
+              <p>Intermediate articles with interactive word definitions, instant native TTS narration, and comprehension checks.</p>
+            </div>
+            <div class="module-actions">
+              <select id="reading-category-select" class="custom-select">
+                <option value="all">All Articles</option>
+                <option value="culture">Culture & Society</option>
+                <option value="tech">Technology & Future</option>
+                <option value="business">Workplace & Careers</option>
+                <option value="psychology">Mindset & Habits</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="reading-layout">
+            <!-- Article Selector List -->
+            <div class="articles-sidebar">
+              <div class="articles-list" id="articles-list-container">
+                <!-- Injected via reading.js -->
+              </div>
+            </div>
+
+            <!-- Article Viewer -->
+            <div class="article-reader-pane">
+              <div class="reader-toolbar">
+                <div class="reader-meta">
+                  <span class="article-level-badge" id="reader-level">B2 Intermediate</span>
+                  <span class="read-time" id="reader-time">⏱️ 3 min read</span>
+                </div>
+                <div class="reader-tools">
+                  <button class="btn btn-sm btn-outline" id="btn-read-aloud">🔊 Listen Article</button>
+                  <button class="btn btn-sm btn-outline" id="btn-font-size">Aa Text Size</button>
+                </div>
+              </div>
+
+              <article class="article-body" id="article-content-display">
+                <h2 id="article-title-heading">Select an article to begin reading</h2>
+                <div id="article-paragraphs">
+                  <!-- Text with clickable word tooltips -->
+                </div>
+              </article>
+
+              <!-- Comprehension Quiz Accordion -->
+              <div class="quiz-container" id="reading-quiz-card" style="display:none;">
+                <div class="quiz-header">
+                  <h3>🧠 Quick Comprehension Check</h3>
+                  <span>Test how well you grasped the key ideas</span>
+                </div>
+                <div id="quiz-questions-list"></div>
+                <button class="btn btn-primary" id="btn-submit-quiz">Check Quiz Answers</button>
+                <div id="quiz-result-feedback"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5: INTERACTIVE ROLEPLAY CHAT -->
+        <section class="tab-pane" id="pane-dialogue">
+          <div class="module-header">
+            <div>
+              <h2>Conversational Roleplay Partner</h2>
+              <p>Practice realistic English dialogues. Fluently corrects every message you send before continuing the conversation.</p>
+            </div>
+            <div class="module-actions">
+              <label for="scenario-select" style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Scenario:</label>
+              <select id="scenario-select" class="custom-select">
+                <option value="job_interview">💼 Job Interview (Tech / Business)</option>
+                <option value="coffee_shop">☕ Ordering at a London Coffee Shop</option>
+                <option value="hotel_checkin">🏨 Hotel Check-in & Requesting an Upgrade</option>
+                <option value="office_debate">🤝 Workplace Collaboration & Polite Disagreement</option>
+                <option value="airport">✈️ Airport Immigration & Customs</option>
+              </select>
+              <button class="btn btn-outline btn-sm" id="btn-restart-chat">🔄 Restart Dialogue</button>
+            </div>
+          </div>
+
+          <div class="chat-layout">
+            <div class="chat-scenario-banner">
+              <div class="scenario-icon" id="chat-scenario-icon">💼</div>
+              <div class="scenario-details">
+                <h4 id="chat-scenario-title">Job Interview for a Project Role</h4>
+                <p id="chat-scenario-desc">You are being interviewed by Alex, a hiring manager. Answer questions clearly and professionally.</p>
+              </div>
+            </div>
+
+            <!-- Messages Stream -->
+            <div class="chat-stream" id="chat-stream-box">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Chat Input with Speech & Grammar Pre-Check -->
+            <div class="chat-input-bar">
+              <div class="chat-input-wrapper">
+                <textarea id="chat-input-text" rows="2" placeholder="Type your response in English (e.g., 'I have 3 years of experience managing client projects...')..."></textarea>
+                <button class="chat-mic-btn" id="btn-chat-mic" title="Speak your response">🎙️</button>
+              </div>
+              <button class="btn btn-primary btn-chat-send" id="btn-send-chat">
+                <span>Send</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 6: VOCABULARY ACCELERATOR -->
+        <section class="tab-pane" id="pane-vocabulary">
+          <div class="module-header">
+            <div>
+              <h2>B2 &rarr; C1 Power Vocabulary Booster</h2>
+              <p>Replace basic, repetitive words (e.g. "very good", "bad", "important") with natural, advanced alternatives.</p>
+            </div>
+            <div class="module-actions">
+              <input type="text" id="vocab-search-input" class="search-input" placeholder="Search a word (e.g. 'difficult', 'happy')...">
+            </div>
+          </div>
+
+          <div class="vocab-matrix" id="vocab-cards-grid">
+            <!-- Populated via app.js -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings & API Modal -->
+  <div class="modal-backdrop" id="settings-modal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Settings & AI Configuration</h3>
+        <button class="modal-close" id="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label for="ai-engine-select">Grammar & Feedback Engine:</label>
+          <select id="ai-engine-select" class="custom-select">
+            <option value="smart-local">Built-in Neural Heuristic Engine (Offline / Instant)</option>
+            <option value="gemini">Google Gemini AI API (Cloud Real-time)</option>
+          </select>
+          <small class="setting-hint">The built-in engine checks grammar rules, Indianisms, passive voice, and phrasing offline without any API key.</small>
+        </div>
+
+        <div class="setting-group" id="gemini-key-group" style="display:none;">
+          <label for="gemini-api-key">Gemini API Key (Optional):</label>
+          <input type="password" id="gemini-api-key" placeholder="AIzaSy..." class="text-input">
+          <small class="setting-hint">Stored securely in your local browser only. Enables deep conversational LLM critiques.</small>
+        </div>
+
+        <div class="setting-group">
+          <label for="voice-rate-range">Native Text-To-Speech Speed:</label>
+          <input type="range" id="voice-rate-range" min="0.7" max="1.3" step="0.1" value="0.95">
+          <div class="range-labels">
+            <span>0.7x (Slower)</span>
+            <span id="voice-rate-label">0.95x</span>
+            <span>1.3x (Fast)</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label for="target-accent-select">Pronunciation Voice Accent:</label>
+          <select id="target-accent-select" class="custom-select">
+            <!-- Populated with browser SpeechSynthesis voices -->
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-reset-stats">Reset Daily Progress</button>
+        <button class="btn btn-primary" id="btn-save-settings">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Word Definition Popover -->
+  <div id="word-definition-popover" class="word-popover" style="display:none;">
+    <div class="popover-header">
+      <strong id="popover-word">Word</strong>
+      <button class="popover-speak-btn" id="popover-speak-btn">🔊</button>
+      <button class="popover-close-btn" id="popover-close-btn">✕</button>
+    </div>
+    <div class="popover-phonetic" id="popover-phonetic">/wɜːd/</div>
+    <div class="popover-def" id="popover-def">Definition will appear here...</div>
+    <div class="popover-example" id="popover-example">"Example sentence."</div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="scripts/analyzer.js"></script>
+  <script src="scripts/ai-service.js"></script>
+  <script src="scripts/writing.js"></script>
+  <script src="scripts/speaking.js"></script>
+  <script src="scripts/reading.js"></script>
+  <script src="scripts/dialogue.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
