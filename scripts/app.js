@@ -255,9 +255,23 @@ class FluentlyApp {
   }
 
   updateStatsUI() {
-    document.getElementById('total-words-stat').innerText = this.totalWords.toLocaleString();
+    const totalWordsEl = document.getElementById('total-words-stat');
+    if (totalWordsEl) totalWordsEl.innerText = this.totalWords.toLocaleString();
     const avg = Math.round(this.speakingScores.reduce((a, b) => a + b, 0) / this.speakingScores.length);
-    document.getElementById('avg-speaking-stat').innerText = `${avg}%`;
+    const avgEl = document.getElementById('avg-speaking-stat');
+    if (avgEl) avgEl.innerText = `${avg}%`;
+
+    // Dynamic radar progress bars
+    const speakingVal = document.getElementById('meter-val-speaking');
+    const speakingBar = document.getElementById('meter-bar-speaking');
+    if (speakingVal) speakingVal.innerText = `${avg}%`;
+    if (speakingBar) speakingBar.style.width = `${avg}%`;
+
+    const structurePct = Math.min(96, Math.max(65, 75 + Math.floor(this.totalWords / 200)));
+    const structVal = document.getElementById('meter-val-structure');
+    const structBar = document.getElementById('meter-bar-structure');
+    if (structVal) structVal.innerText = `${structurePct}%`;
+    if (structBar) structBar.style.width = `${structurePct}%`;
   }
 
   showToast(message, type = 'info') {

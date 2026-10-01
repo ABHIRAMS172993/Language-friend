@@ -51,6 +51,20 @@ class SpeakingStudio {
     this.canvas = document.getElementById('audio-visualizer');
     this.canvasCtx = this.canvas.getContext('2d');
 
+    this.impromptuPrompts = [
+      "What is one technology invention you cannot live without, and why?",
+      "Describe a memorable trip you took and what made it special.",
+      "If you could have dinner with any historical figure, who would it be and why?",
+      "Do you prefer working remotely or in a traditional office? Explain your reasons.",
+      "What is a personal habit you are trying to build or break this year?",
+      "Describe your dream job and what skills you need to succeed in it."
+    ];
+    this.currentImpromptuIndex = 0;
+    this.impromptuRecording = false;
+    this.impromptuTimerInterval = null;
+    this.impromptuSeconds = 0;
+    this.impromptuTranscript = '';
+
     this.initSpeechRecognition();
     this.initEvents();
     this.loadDrill();
@@ -66,10 +80,14 @@ class SpeakingStudio {
       this.recognition.lang = 'en-US';
 
       this.recognition.onstart = () => {
-        this.isRecording = true;
-        this.micBtn.classList.add('recording');
-        this.micStatusLabel.innerText = "Listening... Speak clearly now!";
-        this.animateVisualizer();
+        if (this.impromptuRecording) {
+          // Impromptu mode start
+        } else {
+          this.isRecording = true;
+          this.micBtn.classList.add('recording');
+          this.micStatusLabel.innerText = "Listening... Speak clearly now!";
+          this.animateVisualizer();
+        }
       };
 
       this.recognition.onresult = (event) => {
@@ -77,17 +95,40 @@ class SpeakingStudio {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           transcript += event.results[i][0].transcript;
         }
-        this.evaluateSpeech(transcript);
+        if (this.impromptuRecording) {
+          this.impromptuTranscript = (this.impromptuTranscript ? this.impromptuTranscript + ' ' : '') + transcript;
+          const transcriptEl = document.getElementById('impromptu-transcript-text');
+          if (transcriptEl) {
+            transcriptEl.innerText = this.impromptuTranscript;
+          }
+        } else {
+          this.evaluateSpeech(transcript);
+        }
       };
 
       this.recognition.onerror = (event) => {
         console.warn('Speech recognition error:', event.error);
-        this.stopRecording();
+        if (this.impromptuRecording) {
+          this.stopImpromptuRecording();
+        } else {
+          this.stopRecording();
+        }
         app.showToast('Microphone error: ' + event.error, 'error');
       };
 
       this.recognition.onend = () => {
-        this.stopRecording();
+        if (this.impromptuRecording) {
+          // In impromptu mode, if speech paused but timer still running, auto-restart to continue listening
+          if (this.impromptuSeconds < 60) {
+            try {
+              this.recognition.start();
+            } catch (e) {}
+          } else {
+            this.stopImpromptuRecording();
+          }
+        } else {
+          this.stopRecording();
+        }
       };
     } else {
       console.warn('Web Speech Recognition API is not supported in this browser.');
@@ -138,20 +179,136 @@ class SpeakingStudio {
     });
 
     // Toggle Modes (Read drills vs Impromptu)
-    document.getElementById('btn-mode-read').addEventListener('click', (e) => {
+    document.getElementById('btn-mode-read').addEventListener('click', () => {
       document.getElementById('btn-mode-read').classList.add('active');
       document.getElementById('btn-mode-impromptu').classList.remove('active');
       document.getElementById('speaking-read-section').style.display = 'block';
       document.getElementById('speaking-impromptu-section').style.display = 'none';
     });
 
-    document.getElementById('btn-mode-impromptu').addEventListener('click', (e) => {
+    document.getElementById('btn-mode-impromptu').addEventListener('click', () => {
       document.getElementById('btn-mode-impromptu').classList.add('active');
       document.getElementById('btn-mode-read').classList.remove('active');
       document.getElementById('speaking-read-section').style.display = 'none';
       document.getElementById('speaking-impromptu-section').style.display = 'block';
     });
+
+    // Impromptu new topic
+    const newTopicBtn = document.getElementById('btn-new-impromptu-topic');
+    if (newTopicBtn) {
+      newTopicBtn.addEventListener('click', () => {
+        this.nextImpromptuTopic();
+      });
+    }
+
+    // Impromptu record toggle
+    const toggleRecBtn = document.getElementById('btn-toggle-impromptu-rec');
+    if (toggleRecBtn) {
+      toggleRecBtn.addEventListener('click', () => {
+        this.toggleImpromptuRecording();
+      });
+    }
   }
+
+  nextImpromptuTopic() {
+    this.currentImpromptuIndex = (this.currentImpromptuIndex + 1) % this.impromptuPrompts.length;
+    const promptEl = document.getElementById('impromptu-question');
+    if (promptEl) {
+      promptEl.innerText = `"${this.impromptuPrompts[this.currentImpromptuIndex]}"`;
+    }
+    app.showToast('New impromptu prompt loaded!', 'info');
+  }
+
+  toggleImpromptuRecording() {
+    const btn = document.getElementById('btn-toggle-impromptu-rec');
+    const timerEl = document.getElementById('speaking-timer');
+
+    if (this.impromptuRecording) {
+      this.stopImpromptuRecording();
+    } else {
+      if (!this.recognition) {
+        app.showToast('Speech recognition is not supported in this browser.', 'error');
+        return;
+      }
+      this.impromptuRecording = true;
+      this.impromptuSeconds = 0;
+      this.impromptuTranscript = '';
+      if (btn) btn.innerHTML = '⏹️ Stop & Evaluate';
+      if (timerEl) {
+        timerEl.classList.add('running');
+        timerEl.innerText = '00:00';
+      }
+
+      this.impromptuTimerInterval = setInterval(() => {
+        this.impromptuSeconds++;
+        const mins = String(Math.floor(this.impromptuSeconds / 60)).padStart(2, '0');
+        const secs = String(this.impromptuSeconds % 60).padStart(2, '0');
+        if (timerEl) timerEl.innerText = `${mins}:${secs}`;
+        if (this.impromptuSeconds >= 60) {
+          this.stopImpromptuRecording();
+        }
+      }, 1000);
+
+      try {
+        this.recognition.start();
+      } catch (e) {
+        // already active
+      }
+      app.showToast('Recording started! Speak continuously for 30-60s...', 'success');
+    }
+  }
+
+  stopImpromptuRecording() {
+    this.impromptuRecording = false;
+    clearInterval(this.impromptuTimerInterval);
+    const btn = document.getElementById('btn-toggle-impromptu-rec');
+    const timerEl = document.getElementById('speaking-timer');
+    if (btn) btn.innerHTML = '🎙️ Start Speaking (60s)';
+    if (timerEl) timerEl.classList.remove('running');
+
+    if (this.recognition) {
+      try { this.recognition.stop(); } catch(e) {}
+    }
+
+    this.evaluateImpromptuSpeech();
+  }
+
+  evaluateImpromptuSpeech() {
+    const resultBox = document.getElementById('impromptu-result-box');
+    const transcriptEl = document.getElementById('impromptu-transcript-text');
+    const wpmEl = document.getElementById('impromptu-wpm');
+    const wordsEl = document.getElementById('impromptu-words');
+    const grammarEl = document.getElementById('impromptu-grammar-score');
+    const fluencyEl = document.getElementById('impromptu-fluency-grade');
+
+    if (!resultBox) return;
+    resultBox.style.display = 'block';
+
+    const text = (this.impromptuTranscript || '').trim();
+    if (!text) {
+      transcriptEl.innerHTML = `<span class="text-placeholder">No speech detected. Please check microphone permissions and try speaking again.</span>`;
+      return;
+    }
+
+    transcriptEl.innerText = text;
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    const wordCount = words.length;
+    const minutes = Math.max(0.1, this.impromptuSeconds / 60);
+    const wpm = Math.round(wordCount / minutes);
+
+    // Run analyzer on spoken text
+    const analysis = window.analyzer.analyze(text);
+
+    if (wpmEl) wpmEl.innerText = `${wpm} WPM`;
+    if (wordsEl) wordsEl.innerText = wordCount;
+    if (grammarEl) grammarEl.innerText = analysis.metrics.grammar;
+    if (fluencyEl) fluencyEl.innerText = analysis.gradeLabel.split(' ')[0] || 'B2';
+
+    app.incrementStats(wordCount);
+    app.recordSpeakingScore(analysis.score);
+    app.showToast(`Impromptu evaluation complete! Pacing: ${wpm} WPM`, 'success');
+  }
+
 
   loadDrill() {
     const list = this.drills[this.currentCategory];

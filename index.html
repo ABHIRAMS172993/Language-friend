@@ -119,20 +119,20 @@
               <div class="radar-card">
                 <div class="radar-header">Skill Progression</div>
                 <div class="skill-meter">
-                  <div class="skill-info"><span>Sentence Structure</span><span>78%</span></div>
-                  <div class="meter-bar"><div class="meter-fill" style="width: 78%;"></div></div>
+                  <div class="skill-info"><span>Sentence Structure</span><span id="meter-val-structure">78%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" id="meter-bar-structure" style="width: 78%;"></div></div>
                 </div>
                 <div class="skill-meter">
-                  <div class="skill-info"><span>Pronunciation & Flow</span><span>84%</span></div>
-                  <div class="meter-bar"><div class="meter-fill" style="width: 84%;"></div></div>
+                  <div class="skill-info"><span>Pronunciation & Flow</span><span id="meter-val-speaking">84%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" id="meter-bar-speaking" style="width: 84%;"></div></div>
                 </div>
                 <div class="skill-meter">
-                  <div class="skill-info"><span>Advanced Vocabulary (B2/C1)</span><span>68%</span></div>
-                  <div class="meter-bar"><div class="meter-fill" style="width: 68%;"></div></div>
+                  <div class="skill-info"><span>Advanced Vocabulary (B2/C1)</span><span id="meter-val-vocab">68%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" id="meter-bar-vocab" style="width: 68%;"></div></div>
                 </div>
                 <div class="skill-meter">
-                  <div class="skill-info"><span>Reading Comprehension</span><span>90%</span></div>
-                  <div class="meter-bar"><div class="meter-fill" style="width: 90%;"></div></div>
+                  <div class="skill-info"><span>Reading Comprehension</span><span id="meter-val-reading">90%</span></div>
+                  <div class="meter-bar"><div class="meter-fill" id="meter-bar-reading" style="width: 90%;"></div></div>
                 </div>
               </div>
             </div>
@@ -393,13 +393,46 @@
               </div>
             </div>
 
-            <!-- Free Speaking / Impromptu Prompt Card (Hidden by default or toggled) -->
+            <!-- Free Speaking / Impromptu Prompt Card -->
             <div class="speaking-card" id="speaking-impromptu-section" style="display:none;">
               <div class="impromptu-prompt-card">
                 <span class="prompt-badge">1-Minute Impromptu Speech</span>
                 <h3 id="impromptu-question">"What is one technology invention you cannot live without, and why?"</h3>
-                <p>Press Record, speak continuously for 45-60 seconds. Fluently will evaluate your speech flow, grammar consistency, and vocabulary variety.</p>
+                <p>Press <strong>Start Speaking</strong>, talk continuously for 30–60 seconds on the topic above. Fluently will transcribe your speech and critique your pace, grammar, and vocabulary.</p>
                 <div class="timer-display" id="speaking-timer">00:00</div>
+                <div class="impromptu-actions">
+                  <button class="btn btn-outline" id="btn-new-impromptu-topic">🎲 New Prompt</button>
+                  <button class="btn btn-primary" id="btn-toggle-impromptu-rec">🎙️ Start Speaking (60s)</button>
+                </div>
+              </div>
+
+              <!-- Impromptu Transcript & Evaluation -->
+              <div class="live-transcript-box" id="impromptu-result-box" style="display:none;">
+                <div class="transcript-header">
+                  <span>Transcribed Speech:</span>
+                  <span id="impromptu-accuracy-badge" class="accuracy-badge">Status: Complete</span>
+                </div>
+                <div class="transcript-diff" id="impromptu-transcript-text">
+                  <span class="text-placeholder">Your speech will appear here...</span>
+                </div>
+                <div class="impromptu-feedback-grid" id="impromptu-metrics-grid">
+                  <div class="impromptu-metric-card">
+                    <span>Speaking Pace</span>
+                    <strong id="impromptu-wpm">-- WPM</strong>
+                  </div>
+                  <div class="impromptu-metric-card">
+                    <span>Total Words</span>
+                    <strong id="impromptu-words">0</strong>
+                  </div>
+                  <div class="impromptu-metric-card">
+                    <span>Grammar Score</span>
+                    <strong id="impromptu-grammar-score">--%</strong>
+                  </div>
+                  <div class="impromptu-metric-card">
+                    <span>Fluency Rating</span>
+                    <strong id="impromptu-fluency-grade">B2</strong>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -234,20 +234,23 @@ class DialoguePartner {
       <div class="bubble-avatar">${this.scenarios[this.currentScenarioKey].icon}</div>
       <div class="bubble-content">
         <div class="bubble-text">${text}</div>
+        <button class="chat-speak-btn" onclick="dialoguePartner.speakBotText('${encodeURIComponent(text)}')">🔊 Listen</button>
       </div>
     `;
 
     this.streamBox.appendChild(bubble);
     this.streamBox.scrollTop = this.streamBox.scrollHeight;
     this.chatHistory.push({ role: 'bot', content: text });
+  }
 
-    // Optional audio narration for bot message
-    if (window.speechSynthesis) {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      u.rate = 1.0;
-      // window.speechSynthesis.speak(u);
-    }
+  speakBotText(encodedText) {
+    const text = decodeURIComponent(encodedText);
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = parseFloat(localStorage.getItem('fluently_voice_rate') || '0.95');
+    window.speechSynthesis.speak(u);
   }
 }
 

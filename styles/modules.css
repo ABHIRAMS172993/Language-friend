@@ -674,6 +674,95 @@
   line-height: 1.5;
 }
 
+/* Impromptu Speaking Mode */
+.impromptu-prompt-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.prompt-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+#impromptu-question {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.impromptu-prompt-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+}
+
+.timer-display {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  letter-spacing: 2px;
+  margin: 16px 0;
+}
+
+.timer-display.running {
+  color: var(--accent-warning);
+  animation: pulseRecording 1.5s infinite;
+}
+
+.impromptu-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.impromptu-feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.impromptu-metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+}
+
+.impromptu-metric-card span {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.impromptu-metric-card strong {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-top: 4px;
+  display: block;
+}
+
+
 /* =========================================================
    3. READING LOUNGE STYLES
    ========================================================= */
@@ -974,6 +1063,25 @@
   border-top-right-radius: 2px;
 }
 
+.chat-speak-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chat-speak-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--accent-secondary);
+  border-color: var(--border-active);
+}
+
 .grammar-feedback-badge {
   background: rgba(16, 185, 129, 0.15);
   border: 1px solid rgba(16, 185, 129, 0.3);
@@ -1110,7 +1218,7 @@
    6. WORD DEFINITION POPOVER
    ========================================================= */
 .word-popover {
-  position: absolute;
+  position: fixed;
   z-index: 1000;
   width: 280px;
   background: var(--bg-secondary);

@@ -78,6 +78,21 @@ class WritingCoach {
       }
     });
 
+    // Tone adjustment buttons
+    const formalBtn = document.getElementById('btn-tone-formal');
+    if (formalBtn) {
+      formalBtn.addEventListener('click', () => {
+        this.adjustTone('formal');
+      });
+    }
+
+    const casualBtn = document.getElementById('btn-tone-casual');
+    if (casualBtn) {
+      casualBtn.addEventListener('click', () => {
+        this.adjustTone('casual');
+      });
+    }
+
     // Sub tabs inside feedback
     document.querySelectorAll('.fb-tab').forEach(tab => {
       tab.addEventListener('click', (e) => {
@@ -89,6 +104,68 @@ class WritingCoach {
         if (pane) pane.classList.add('active');
       });
     });
+  }
+
+  adjustTone(tone) {
+    let text = this.textarea.value.trim();
+    if (!text) {
+      app.showToast('Enter some text first to apply tone transformation.', 'warning');
+      return;
+    }
+
+    if (tone === 'formal') {
+      const formalReplacements = [
+        [/\bdon't\b/gi, 'do not'],
+        [/\bcan't\b/gi, 'cannot'],
+        [/\bwon't\b/gi, 'will not'],
+        [/\bdidn't\b/gi, 'did not'],
+        [/\bisn't\b/gi, 'is not'],
+        [/\baren't\b/gi, 'are not'],
+        [/\bwasn't\b/gi, 'was not'],
+        [/\bweren't\b/gi, 'were not'],
+        [/\bI'm\b/gi, 'I am'],
+        [/\bwe're\b/gi, 'we are'],
+        [/\bthey're\b/gi, 'they are'],
+        [/\byou're\b/gi, 'you are'],
+        [/\bgonna\b/gi, 'going to'],
+        [/\bwanna\b/gi, 'wish to'],
+        [/\bkids\b/gi, 'children'],
+        [/\blot of\b/gi, 'substantial number of'],
+        [/\bget\b/gi, 'obtain'],
+        [/\bso\b/gi, 'consequently'],
+        [/\babout\b/gi, 'regarding']
+      ];
+      formalReplacements.forEach(([reg, rep]) => {
+        text = text.replace(reg, rep);
+      });
+      this.textarea.value = text;
+      this.updateCounts();
+      this.runAnalysis();
+      app.showToast('Applied Professional C1 Business tone!', 'success');
+    } else if (tone === 'casual') {
+      const casualReplacements = [
+        [/\bdo not\b/gi, "don't"],
+        [/\bcannot\b/gi, "can't"],
+        [/\bwill not\b/gi, "won't"],
+        [/\bdid not\b/gi, "didn't"],
+        [/\bis not\b/gi, "isn't"],
+        [/\bare not\b/gi, "aren't"],
+        [/\bI am\b/gi, "I'm"],
+        [/\bwe are\b/gi, "we're"],
+        [/\bthey are\b/gi, "they're"],
+        [/\bconsequently\b/gi, "so"],
+        [/\bfurthermore\b/gi, "also"],
+        [/\bparamount\b/gi, "super important"],
+        [/\bexceptional\b/gi, "really great"]
+      ];
+      casualReplacements.forEach(([reg, rep]) => {
+        text = text.replace(reg, rep);
+      });
+      this.textarea.value = text;
+      this.updateCounts();
+      this.runAnalysis();
+      app.showToast('Applied Relaxed Casual Conversational tone!', 'success');
+    }
   }
 
   loadPrompt(promptText) {

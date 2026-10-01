@@ -249,8 +249,8 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
 
     const rect = event.target.getBoundingClientRect();
     this.popover.style.display = 'block';
-    this.popover.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    this.popover.style.left = `${Math.min(window.innerWidth - 300, rect.left + window.scrollX - 20)}px`;
+    this.popover.style.top = `${rect.bottom + 8}px`;
+    this.popover.style.left = `${Math.max(16, Math.min(window.innerWidth - 300, rect.left - 20))}px`;
   }
 
   readArticleAloud() {
