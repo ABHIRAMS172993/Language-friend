@@ -2,7 +2,7 @@
  * FLUENTLY - NLP & Intermediate Grammar Analyzer
  * Comprehensive rule-based parser for intermediate English learners.
  * Handles subject-verb agreement, common ESL/Indian English errors, redundant phrases,
- * weak vocabulary, and generates enhanced C1 suggestions.
+ * weak vocabulary, spelling errors, prepositions, articles, and generates enhanced C1 suggestions.
  */
 
 class EnglishAnalyzer {
@@ -16,11 +16,17 @@ class EnglishAnalyzer {
       chose: 'choose', drank: 'drink', fell: 'fall', forgot: 'forget',
       got: 'get', lost: 'lose', paid: 'pay', sent: 'send', slept: 'sleep',
       spent: 'spend', stood: 'stand', swam: 'swim', taught: 'teach',
-      threw: 'throw', understood: 'understand', wore: 'wear', won: 'win'
+      threw: 'throw', understood: 'understand', wore: 'wear', won: 'win',
+      broke: 'break', built: 'build', caught: 'catch', drove: 'drive',
+      flew: 'fly', kept: 'keep', left: 'leave', read: 'read',
+      rode: 'ride', sold: 'sell', showed: 'show', sung: 'sing',
+      sat: 'sit', taught: 'teach', woke: 'wake', won: 'win'
     };
 
     this.grammarRules = [
-      // 0. High-Frequency Spacing, Pronouns & Typos
+      // -------------------------------------------------------------
+      // 0. High-Frequency Spacing, Pronouns, Contractions & Typos
+      // -------------------------------------------------------------
       {
         pattern: /\bIam\b/g,
         type: 'Spacing & Contraction',
@@ -41,6 +47,111 @@ class EnglishAnalyzer {
         severity: 'error',
         replacement: "$1I$2",
         explanation: "The first-person pronoun 'I' must always be capitalized."
+      },
+      {
+        pattern: /\bdont\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "don't",
+        explanation: "Missing apostrophe. Write \"don't\"."
+      },
+      {
+        pattern: /\bcant\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "can't",
+        explanation: "Missing apostrophe. Write \"can't\"."
+      },
+      {
+        pattern: /\bwont\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "won't",
+        explanation: "Missing apostrophe. Write \"won't\"."
+      },
+      {
+        pattern: /\bdidnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "didn't",
+        explanation: "Missing apostrophe. Write \"didn't\"."
+      },
+      {
+        pattern: /\bisnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "isn't",
+        explanation: "Missing apostrophe. Write \"isn't\"."
+      },
+      {
+        pattern: /\barent\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "aren't",
+        explanation: "Missing apostrophe. Write \"aren't\"."
+      },
+      {
+        pattern: /\bwasnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "wasn't",
+        explanation: "Missing apostrophe. Write \"wasn't\"."
+      },
+      {
+        pattern: /\bwerent\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "weren't",
+        explanation: "Missing apostrophe. Write \"weren't\"."
+      },
+      {
+        pattern: /\bhasnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "hasn't",
+        explanation: "Missing apostrophe. Write \"hasn't\"."
+      },
+      {
+        pattern: /\bhavent\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "haven't",
+        explanation: "Missing apostrophe. Write \"haven't\"."
+      },
+      {
+        pattern: /\bhadnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "hadn't",
+        explanation: "Missing apostrophe. Write \"hadn't\"."
+      },
+      {
+        pattern: /\bcouldnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "couldn't",
+        explanation: "Missing apostrophe. Write \"couldn't\"."
+      },
+      {
+        pattern: /\bshouldnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "shouldn't",
+        explanation: "Missing apostrophe. Write \"shouldn't\"."
+      },
+      {
+        pattern: /\bwouldnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "wouldn't",
+        explanation: "Missing apostrophe. Write \"wouldn't\"."
+      },
+      {
+        pattern: /\bdoesnt\b/gi,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "doesn't",
+        explanation: "Missing apostrophe. Write \"doesn't\"."
       },
       {
         pattern: /\balot\b/gi,
@@ -99,7 +210,139 @@ class EnglishAnalyzer {
         explanation: "As a verb phrase, use 'thank you' (two words). 'Thank-you' is only a noun/adjective."
       },
 
-      // 1. Movement Verbs with 'Home' & Preposition Errors
+      // -------------------------------------------------------------
+      // 1. Common English Spelling Mistakes
+      // -------------------------------------------------------------
+      {
+        pattern: /\bteh\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'the',
+        explanation: "Typo for 'the'."
+      },
+      {
+        pattern: /\brecieve\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'receive',
+        explanation: "Remember: 'i' before 'e' except after 'c' ('receive')."
+      },
+      {
+        pattern: /\bseperate\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'separate',
+        explanation: "Correct spelling is 'separate' (with 'a')."
+      },
+      {
+        pattern: /\bdefinately\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'definitely',
+        explanation: "Correct spelling is 'definitely'."
+      },
+      {
+        pattern: /\buntill\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'until',
+        explanation: "'Until' has only one 'l'."
+      },
+      {
+        pattern: /\boccured\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'occurred',
+        explanation: "'Occurred' is spelled with double 'r'."
+      },
+      {
+        pattern: /\btruely\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'truly',
+        explanation: "'Truly' drops the 'e'."
+      },
+      {
+        pattern: /\btommorrow\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'tomorrow',
+        explanation: "'Tomorrow' is spelled with one 'm' and double 'r'."
+      },
+      {
+        pattern: /\bgoverment\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'government',
+        explanation: "'Government' contains an 'n' before 'm'."
+      },
+      {
+        pattern: /\benviroment\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'environment',
+        explanation: "'Environment' contains an 'n' before 'm'."
+      },
+      {
+        pattern: /\brecomended\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'recommended',
+        explanation: "'Recommended' has double 'm'."
+      },
+      {
+        pattern: /\bsucessful\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'successful',
+        explanation: "'Successful' is spelled with double 'c' and double 's'."
+      },
+      {
+        pattern: /\baccross\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'across',
+        explanation: "'Across' has one 'c'."
+      },
+      {
+        pattern: /\bbecuase\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'because',
+        explanation: "Typo for 'because'."
+      },
+      {
+        pattern: /\bbeleive\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'believe',
+        explanation: "Correct spelling is 'believe' ('ie')."
+      },
+      {
+        pattern: /\bwritting\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'writing',
+        explanation: "'Writing' has a single 't'."
+      },
+      {
+        pattern: /\bpronounciation\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'pronunciation',
+        explanation: "'Pronunciation' has 'nun', not 'noun'."
+      },
+      {
+        pattern: /\bgrammer\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'grammar',
+        explanation: "'Grammar' ends with 'ar', not 'er'."
+      },
+
+      // -------------------------------------------------------------
+      // 2. Movement Verbs with 'Home' & Direction Prepositions
+      // -------------------------------------------------------------
       {
         pattern: /\b(go|going|went|gone|goes|come|coming|came|reach|reached|reaching|reaches|arrive|arrived|arriving|walk|walking|walked|run|running|ran|drive|driving|drove|head|heading|headed|return|returning|returned)\s+to\s+home\b/gi,
         type: 'Preposition Error',
@@ -115,7 +358,9 @@ class EnglishAnalyzer {
         explanation: "'Reach' is a transitive verb that directly takes the destination without 'to' (e.g. '$1 $2$3')."
       },
 
-      // 2. Missing Articles with Transport Stations & Public Places
+      // -------------------------------------------------------------
+      // 3. Missing Articles with Transport Stations & Public Places
+      // -------------------------------------------------------------
       {
         pattern: /\b(reach|reached|reaches|reaching|go\s+to|going\s+to|went\s+to|at|leave|leaving|left|arrive\s+at|arriving\s+at|arrived\s+at)\s+(railway\s+station|bus\s+stand|bus\s+station|airport|train\s+station|metro\s+station|office|gym|hospital|bank)\b/gi,
         type: 'Missing Article',
@@ -123,8 +368,24 @@ class EnglishAnalyzer {
         replacement: '$1 the $2',
         explanation: "Singular countable places like '$2' require a definite article ('the $2') or indefinite article in this context."
       },
+      {
+        pattern: /\ba\s+(apple|hour|honest|idea|issue|opportunity|example|email|interview|answer|event|elephant|option|action|article)\b/gi,
+        type: 'Article Error (A vs An)',
+        severity: 'error',
+        replacement: 'an $1',
+        explanation: "Use 'an' before words starting with a vowel sound ('an $1')."
+      },
+      {
+        pattern: /\ban\s+(university|european|uniform|unique|user|car|book|person|house|table|hotel|company)\b/gi,
+        type: 'Article Error (A vs An)',
+        severity: 'error',
+        replacement: 'a $1',
+        explanation: "Use 'a' before words starting with a consonant sound ('a $1')."
+      },
 
-      // 3. Common ESL / Regional Idioms & Redundancies
+      // -------------------------------------------------------------
+      // 4. Common ESL / Regional Idioms & Redundancies
+      // -------------------------------------------------------------
       {
         pattern: /\brevert\s+back\b/gi,
         type: 'Redundancy',
@@ -203,6 +464,13 @@ class EnglishAnalyzer {
         explanation: "'Say' requires the preposition 'to' before a person (say to $2), or use 'tell/told $2'."
       },
       {
+        pattern: /\b(he|she|they|I|we|who)\s+told\s+that\b/gi,
+        type: 'Say vs Tell Error',
+        severity: 'error',
+        replacement: '$1 said that',
+        explanation: "'Tell' must have a recipient/object (e.g. '$1 told me that' or '$1 said that')."
+      },
+      {
         pattern: /\bexplain\s+me\b/gi,
         type: 'Preposition Error',
         severity: 'error',
@@ -231,6 +499,13 @@ class EnglishAnalyzer {
         explanation: "In standard English, we usually 'have $2' or 'drink $2' rather than 'take $2'."
       },
       {
+        pattern: /\bhave\s+(?:a\s+)?doubt\b/gi,
+        type: 'Collocation Choice',
+        severity: 'warning',
+        replacement: 'have a question / have a query',
+        explanation: "'Doubt' implies mistrust or skepticism in international English. When asking for clarification, use 'have a question' or 'have a query'."
+      },
+      {
         pattern: /\baccording\s+to\s+me\b/gi,
         type: 'Collocation Error',
         severity: 'warning',
@@ -243,27 +518,6 @@ class EnglishAnalyzer {
         severity: 'error',
         replacement: 'this morning',
         explanation: "Use 'this morning', not 'today morning'."
-      },
-      {
-        pattern: /\b(he|she|they|I|we|who)\s+told\s+that\b/gi,
-        type: 'Say vs Tell Error',
-        severity: 'error',
-        replacement: '$1 said that',
-        explanation: "'Tell' must have a recipient/object (e.g. '$1 told me that' or '$1 said that')."
-      },
-      {
-        pattern: /\bhave\s+(?:a\s+)?doubt\b/gi,
-        type: 'Collocation Choice',
-        severity: 'warning',
-        replacement: 'have a question / have a query',
-        explanation: "'Doubt' implies mistrust or skepticism in international English. When asking for clarification, use 'have a question' or 'have a query'."
-      },
-      {
-        pattern: /\bsince\s+(\d+|several|a\s+few|many)\s+(years|months|days|weeks|hours|minutes)\b/gi,
-        type: 'Preposition of Duration',
-        severity: 'error',
-        replacement: 'for $1 $2',
-        explanation: "Use 'for' with periods/durations of time ('for $1 $2'), and 'since' only for specific starting points in time (e.g. 'since 2020')."
       },
       {
         pattern: /\byesterday\s+night\b/gi,
@@ -285,6 +539,13 @@ class EnglishAnalyzer {
         severity: 'error',
         replacement: '$1',
         explanation: "Do not use the preposition 'on' before 'yesterday', 'today', or 'tomorrow'."
+      },
+      {
+        pattern: /\bsince\s+(\d+|several|a\s+few|many)\s+(years|months|days|weeks|hours|minutes)\b/gi,
+        type: 'Preposition of Duration',
+        severity: 'error',
+        replacement: 'for $1 $2',
+        explanation: "Use 'for' with periods/durations of time ('for $1 $2'), and 'since' only for specific starting points in time (e.g. 'since 2020')."
       },
       {
         pattern: /\bin\s+the\s+night\b/gi,
@@ -335,8 +596,52 @@ class EnglishAnalyzer {
         replacement: 'despite / in spite of',
         explanation: "'Despite' never takes 'of'. Use 'despite' or 'in spite of'."
       },
+      {
+        pattern: /\benter\s+into\s+the\s+(room|building|office|hall|class|meeting)\b/gi,
+        type: 'Preposition Redundancy',
+        severity: 'error',
+        replacement: 'enter the $1',
+        explanation: "'Enter' is transitive with physical spaces; do not use 'enter into the $1'."
+      },
+      {
+        pattern: /\b(good|bad|expert)\s+in\s+(English|math|coding|sports|speaking|writing|grammar)\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: '$1 at $2',
+        explanation: "Use 'good at $2' / 'bad at $2' when referring to skills and subjects."
+      },
+      {
+        pattern: /\binterested\s+for\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'interested in',
+        explanation: "The correct preposition is 'interested in', not 'interested for'."
+      },
+      {
+        pattern: /\bdepend\s+of\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'depend on',
+        explanation: "We say 'depend on' or 'depends on', never 'depend of'."
+      },
+      {
+        pattern: /\blisten\s+(music|him|her|them|us|me)\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'listen to $1',
+        explanation: "'Listen' requires the preposition 'to' (e.g. 'listen to $1')."
+      },
+      {
+        pattern: /\bwait\s+(me|him|her|them|us)\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'wait for $1',
+        explanation: "'Wait' requires the preposition 'for' before a person (e.g. 'wait for $1')."
+      },
 
-      // 4. Uncountable Noun Traps
+      // -------------------------------------------------------------
+      // 5. Uncountable Noun Traps
+      // -------------------------------------------------------------
       {
         pattern: /\b(an\s+)?advices\b/gi,
         type: 'Uncountable Noun',
@@ -387,7 +692,9 @@ class EnglishAnalyzer {
         explanation: "'Homework' is uncountable. Use 'homework' or 'assignments'."
       },
 
-      // 5. Stative Verbs in Continuous Form Trap
+      // -------------------------------------------------------------
+      // 6. Stative Verbs in Continuous Form Trap
+      // -------------------------------------------------------------
       {
         pattern: /\b(am|is|are|was|were)\s+having\s+(a\s+|an\s+)?(car|bike|laptop|phone|house|dog|cat|sister|brother|doubt|question|meeting)\b/gi,
         type: 'Stative Verb Error',
@@ -395,8 +702,24 @@ class EnglishAnalyzer {
         replacement: 'have $2$3',
         explanation: "When expressing possession or relationship, 'have' is stative and not used in continuous '-ing' form (e.g. 'have $2$3')."
       },
+      {
+        pattern: /\b(am|is|are)\s+knowing\b/gi,
+        type: 'Stative Verb Error',
+        severity: 'error',
+        replacement: 'know',
+        explanation: "'Know' is a stative verb and is not used in continuous '-ing' form."
+      },
+      {
+        pattern: /\b(am|is|are)\s+understanding\b/gi,
+        type: 'Stative Verb Error',
+        severity: 'warning',
+        replacement: 'understand',
+        explanation: "'Understand' is usually used in the simple form ('I understand'), not continuous."
+      },
 
-      // 6. Double Comparative & Modal Errors
+      // -------------------------------------------------------------
+      // 7. Double Comparative & Modal Errors
+      // -------------------------------------------------------------
       {
         pattern: /\bcould\s+able\s+to\b/gi,
         type: 'Modal Redundancy',
@@ -410,6 +733,13 @@ class EnglishAnalyzer {
         severity: 'error',
         replacement: 'can / will be able to',
         explanation: "Use either 'can' or 'will be able to'."
+      },
+      {
+        pattern: /\b(must|should|could|can|might|will|would)\s+to\s+([a-zA-Z]+)\b/gi,
+        type: 'Modal Auxiliary Error',
+        severity: 'error',
+        replacement: '$1 $2',
+        explanation: "Modal auxiliaries ('$1') take a bare infinitive without 'to' (e.g. '$1 $2')."
       },
       {
         pattern: /\bmore\s+better\b/gi,
@@ -433,7 +763,9 @@ class EnglishAnalyzer {
         explanation: "Use 'faster', not 'more faster'."
       },
 
-      // 7. Subject-Verb Agreement Common Traps
+      // -------------------------------------------------------------
+      // 8. Subject-Verb Agreement Common Traps
+      // -------------------------------------------------------------
       {
         pattern: /\beveryone\s+are\b/gi,
         type: 'Subject-Verb Agreement',
@@ -470,6 +802,27 @@ class EnglishAnalyzer {
         explanation: "'One' is the singular subject. Use 'is' instead of 'are'."
       },
       {
+        pattern: /\b(he|she|it)\s+go\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 goes',
+        explanation: "Third-person singular subjects ('$1') require the verb 'goes' instead of 'go'."
+      },
+      {
+        pattern: /\b(he|she|it)\s+do\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 does',
+        explanation: "Third-person singular subjects ('$1') require the verb 'does' instead of 'do'."
+      },
+      {
+        pattern: /\b(he|she|it)\s+(want|know|think|say|like|work|depend|need|seem|feel|try)\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 $2s',
+        explanation: "Third-person singular subjects ('he/she/it') require singular verbs ending in -s (e.g. '$1 $2s')."
+      },
+      {
         pattern: /\bhe\s+do\s+not\b/gi,
         type: 'Subject-Verb Agreement',
         severity: 'error',
@@ -497,8 +850,17 @@ class EnglishAnalyzer {
         replacement: 'it saves time',
         explanation: "Third-person singular 'it' requires singular verb 'saves'."
       },
+      {
+        pattern: /\b(they|we|you)\s+(goes|wants|knows|thinks|says|likes|works)\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 [base verb]',
+        explanation: "Plural subjects ('$1') take base verb forms without '-s'."
+      },
 
-      // 8. Word Confusion (Homophones / Intermediate)
+      // -------------------------------------------------------------
+      // 9. Word Confusion (Homophones / Intermediate)
+      // -------------------------------------------------------------
       {
         pattern: /\btheir\s+is\b/gi,
         type: 'Confused Words',
@@ -599,12 +961,15 @@ class EnglishAnalyzer {
       const regex = new RegExp(rule.pattern.source, rule.pattern.flags);
       while ((match = regex.exec(text)) !== null) {
         let replacement = rule.replacement;
-        if (match[1] && replacement.includes('$1')) {
-          replacement = replacement.split('$1').join(match[1]);
+        
+        // Safely interpolate all capture groups
+        for (let i = 1; i < match.length; i++) {
+          const val = match[i] !== undefined ? match[i] : '';
+          replacement = replacement.split(`$${i}`).join(val);
         }
-        if (match[2] && replacement.includes('$2')) {
-          replacement = replacement.split('$2').join(match[2]);
-        }
+        // Clean any un-substituted tokens
+        replacement = replacement.replace(/\$[0-9]/g, '').trim();
+
         issues.push({
           type: rule.type,
           severity: rule.severity,
@@ -613,6 +978,11 @@ class EnglishAnalyzer {
           explanation: rule.explanation,
           index: match.index
         });
+
+        // Prevent zero-width match infinite loops
+        if (match[0].length === 0) {
+          regex.lastIndex++;
+        }
       }
     });
 

@@ -178,7 +178,7 @@ class WritingCoach {
 
   updateCounts() {
     const val = this.textarea.value.trim();
-    const words = val.length ? val.split(/\s+/).length : 0;
+    const words = val.length ? val.split(/\s+/).filter(Boolean).length : 0;
     this.wordCountEl.innerText = words;
     this.charCountEl.innerText = this.textarea.value.length;
   }
@@ -194,28 +194,44 @@ class WritingCoach {
     this.scoreLabelEl.innerText = "Analyzing grammar & style...";
     this.scoreValEl.innerText = "..";
 
-    const result = await window.aiService.getWritingCritique(text);
+    try {
+      const result = await window.aiService.getWritingCritique(text);
 
-    // Update Scores
-    this.scoreValEl.innerText = result.score;
-    this.scoreLabelEl.innerText = result.gradeLabel;
-    this.metricGrammar.innerText = result.metrics.grammar;
-    this.metricVariety.innerText = result.metrics.variety;
-    this.metricVocab.innerText = result.metrics.vocab;
+      // Update Scores
+      this.scoreValEl.innerText = result.score !== undefined ? result.score : '--';
+      this.scoreLabelEl.innerText = result.gradeLabel || 'Analyzed';
+      this.metricGrammar.innerText = result.metrics?.grammar || '--';
+      this.metricVariety.innerText = result.metrics?.variety || '--';
+      this.metricVocab.innerText = result.metrics?.vocab || '--';
 
-    // Render Issues List
-    this.countIssuesEl.innerText = result.issues.length;
-    this.renderIssues(result.issues);
+      // Render Issues List
+      const issueList = result.issues || [];
+      this.countIssuesEl.innerText = issueList.length;
+      this.renderIssues(issueList);
 
-    // Render Polished Text
-    this.polishedTextContainer.innerHTML = `<p>${result.polishedText || 'No modifications needed! Excellent flow.'}</p>`;
+      // Render Polished Text
+      this.polishedTextContainer.innerHTML = `<p>${result.polishedText || 'No modifications needed! Excellent flow.'}</p>`;
 
-    // Render Vocab Upgrades
-    this.renderVocabUpgrades(result.vocabSuggestions);
+      // Render Vocab Upgrades
+      this.renderVocabUpgrades(result.vocabSuggestions || []);
 
-    // Track total words
-    app.incrementStats(result.wordCount);
-    app.showToast(`Analysis complete! Detected ${result.issues.length} potential improvements.`, 'success');
+      // Track total words
+      app.incrementStats(result.wordCount || 0);
+      app.showToast(`Analysis complete! Detected ${issueList.length} potential improvements.`, 'success');
+    } catch (err) {
+      console.error('Analysis error:', err);
+      const result = window.analyzer.analyze(text);
+      this.scoreValEl.innerText = result.score;
+      this.scoreLabelEl.innerText = result.gradeLabel;
+      this.metricGrammar.innerText = result.metrics.grammar;
+      this.metricVariety.innerText = result.metrics.variety;
+      this.metricVocab.innerText = result.metrics.vocab;
+      this.countIssuesEl.innerText = result.issues.length;
+      this.renderIssues(result.issues);
+      this.polishedTextContainer.innerHTML = `<p>${result.polishedText}</p>`;
+      this.renderVocabUpgrades(result.vocabSuggestions);
+      app.showToast('Analysis completed using local grammar engine.', 'info');
+    }
   }
 
   renderIssues(issues) {
@@ -231,7 +247,7 @@ class WritingCoach {
 
     let html = '';
     issues.forEach((issue, idx) => {
-      const fixTarget = issue.replacement.split(' / ')[0].replace('$1', '').replace('$2', '').trim();
+      const fixTarget = issue.replacement.split(' / ')[0].replace(/\$[0-9]/g, '').trim();
       html += `
         <div class="issue-item ${issue.severity === 'warning' ? 'warning' : ''}">
           <div class="issue-header">
