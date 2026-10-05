@@ -273,7 +273,8 @@ class WritingCoach {
   applyFix(encodedMatch, encodedReplacement) {
     const match = decodeURIComponent(encodedMatch);
     const replacement = decodeURIComponent(encodedReplacement);
-    this.textarea.value = this.textarea.value.replace(new RegExp(match, 'i'), replacement);
+    const escaped = match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    this.textarea.value = this.textarea.value.replace(new RegExp(escaped, 'i'), replacement);
     this.updateCounts();
     this.runAnalysis();
     app.showToast(`Applied fix: "${replacement}"`, 'success');

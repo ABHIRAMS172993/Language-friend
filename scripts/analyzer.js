@@ -20,7 +20,111 @@ class EnglishAnalyzer {
     };
 
     this.grammarRules = [
-      // 1. Common ESL / Regional Idioms & Redundancies
+      // 0. High-Frequency Spacing, Pronouns & Typos
+      {
+        pattern: /\bIam\b/g,
+        type: 'Spacing & Contraction',
+        severity: 'error',
+        replacement: "I am / I'm",
+        explanation: "'Iam' is missing a space. Write 'I am' or use the contraction \"I'm\"."
+      },
+      {
+        pattern: /\bIm\b/g,
+        type: 'Punctuation & Contraction',
+        severity: 'error',
+        replacement: "I'm / I am",
+        explanation: "Missing apostrophe in contraction. Write \"I'm\" or 'I am'."
+      },
+      {
+        pattern: /(^|[\s,;:(])i([\s,;:.!?')])/g,
+        type: 'Capitalization',
+        severity: 'error',
+        replacement: "$1I$2",
+        explanation: "The first-person pronoun 'I' must always be capitalized."
+      },
+      {
+        pattern: /\balot\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'a lot',
+        explanation: "'A lot' is always written as two separate words."
+      },
+      {
+        pattern: /\binfront\s+of\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'in front of',
+        explanation: "'In front' is written as two separate words."
+      },
+      {
+        pattern: /\baswell\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'as well',
+        explanation: "'As well' is written as two separate words."
+      },
+      {
+        pattern: /\bnoone\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'no one',
+        explanation: "'No one' is written as two separate words."
+      },
+      {
+        pattern: /\beachother\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'each other',
+        explanation: "'Each other' is written as two separate words."
+      },
+      {
+        pattern: /\batleast\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'at least',
+        explanation: "'At least' is written as two separate words."
+      },
+      {
+        pattern: /\bincase\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'error',
+        replacement: 'in case',
+        explanation: "'In case' is written as two separate words."
+      },
+      {
+        pattern: /\bthankyou\b/gi,
+        type: 'Spelling & Spacing',
+        severity: 'warning',
+        replacement: 'thank you',
+        explanation: "As a verb phrase, use 'thank you' (two words). 'Thank-you' is only a noun/adjective."
+      },
+
+      // 1. Movement Verbs with 'Home' & Preposition Errors
+      {
+        pattern: /\b(go|going|went|gone|goes|come|coming|came|reach|reached|reaching|reaches|arrive|arrived|arriving|walk|walking|walked|run|running|ran|drive|driving|drove|head|heading|headed|return|returning|returned)\s+to\s+home\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: '$1 home',
+        explanation: "'Home' functions as an adverb of direction with movement verbs. Do not use 'to' before 'home' (say '$1 home')."
+      },
+      {
+        pattern: /\b(reach|reaching|reached|reaches)\s+to\s+(the\s+|a\s+|an\s+)?([a-zA-Z]+)\b/gi,
+        type: 'Transitive Verb Error',
+        severity: 'error',
+        replacement: '$1 $2$3',
+        explanation: "'Reach' is a transitive verb that directly takes the destination without 'to' (e.g. '$1 $2$3')."
+      },
+
+      // 2. Missing Articles with Transport Stations & Public Places
+      {
+        pattern: /\b(reach|reached|reaches|reaching|go\s+to|going\s+to|went\s+to|at|leave|leaving|left|arrive\s+at|arriving\s+at|arrived\s+at)\s+(railway\s+station|bus\s+stand|bus\s+station|airport|train\s+station|metro\s+station|office|gym|hospital|bank)\b/gi,
+        type: 'Missing Article',
+        severity: 'error',
+        replacement: '$1 the $2',
+        explanation: "Singular countable places like '$2' require a definite article ('the $2') or indefinite article in this context."
+      },
+
+      // 3. Common ESL / Regional Idioms & Redundancies
       {
         pattern: /\brevert\s+back\b/gi,
         type: 'Redundancy',
@@ -84,14 +188,228 @@ class EnglishAnalyzer {
         replacement: "here's an idea / consider this",
         explanation: "'Do one thing' is a direct translation. Prefer 'Consider this' or 'Here is a suggestion'."
       },
+      {
+        pattern: /\btell\s+to\s+(me|us|him|her|them)\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'tell $1',
+        explanation: "'Tell' takes a direct personal object without 'to' (e.g. 'tell $1', not 'tell to $1')."
+      },
+      {
+        pattern: /\b(said|say|says)\s+(me|us|him|her|them)\b/gi,
+        type: 'Say vs Tell Error',
+        severity: 'error',
+        replacement: 'told $2 / said to $2',
+        explanation: "'Say' requires the preposition 'to' before a person (say to $2), or use 'tell/told $2'."
+      },
+      {
+        pattern: /\bexplain\s+me\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'explain to me',
+        explanation: "In standard English, use 'explain to me' or 'explain this to me', not 'explain me'."
+      },
+      {
+        pattern: /\bsuggest\s+me\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'suggest to me / recommend to me',
+        explanation: "Use 'suggest to me' or 'recommend to me', not 'suggest me'."
+      },
+      {
+        pattern: /\b(give|giving|gave|given)\s+(an?\s+)?exam\b/gi,
+        type: 'Collocation Error',
+        severity: 'error',
+        replacement: 'take / taking an exam',
+        explanation: "Students 'take' or 'sit for' an exam; examiners and teachers 'give' the exam."
+      },
+      {
+        pattern: /\b(take|taking|took)\s+(tea|coffee)\b/gi,
+        type: 'Collocation Error',
+        severity: 'warning',
+        replacement: 'have / drink $2',
+        explanation: "In standard English, we usually 'have $2' or 'drink $2' rather than 'take $2'."
+      },
+      {
+        pattern: /\baccording\s+to\s+me\b/gi,
+        type: 'Collocation Error',
+        severity: 'warning',
+        replacement: 'in my opinion / from my perspective',
+        explanation: "'According to' is used for third parties or sources. For your own view, use 'in my opinion' or 'from my perspective'."
+      },
+      {
+        pattern: /\btoday\s+morning\b/gi,
+        type: 'Time Expression',
+        severity: 'error',
+        replacement: 'this morning',
+        explanation: "Use 'this morning', not 'today morning'."
+      },
+      {
+        pattern: /\b(he|she|they|I|we|who)\s+told\s+that\b/gi,
+        type: 'Say vs Tell Error',
+        severity: 'error',
+        replacement: '$1 said that',
+        explanation: "'Tell' must have a recipient/object (e.g. '$1 told me that' or '$1 said that')."
+      },
+      {
+        pattern: /\bhave\s+(?:a\s+)?doubt\b/gi,
+        type: 'Collocation Choice',
+        severity: 'warning',
+        replacement: 'have a question / have a query',
+        explanation: "'Doubt' implies mistrust or skepticism in international English. When asking for clarification, use 'have a question' or 'have a query'."
+      },
+      {
+        pattern: /\bsince\s+(\d+|several|a\s+few|many)\s+(years|months|days|weeks|hours|minutes)\b/gi,
+        type: 'Preposition of Duration',
+        severity: 'error',
+        replacement: 'for $1 $2',
+        explanation: "Use 'for' with periods/durations of time ('for $1 $2'), and 'since' only for specific starting points in time (e.g. 'since 2020')."
+      },
+      {
+        pattern: /\byesterday\s+night\b/gi,
+        type: 'Time Expression',
+        severity: 'error',
+        replacement: 'last night',
+        explanation: "Use 'last night', not 'yesterday night'."
+      },
+      {
+        pattern: /\btoday\s+night\b/gi,
+        type: 'Time Expression',
+        severity: 'error',
+        replacement: 'tonight',
+        explanation: "Use 'tonight', not 'today night'."
+      },
+      {
+        pattern: /\bon\s+(yesterday|today|tomorrow)\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: '$1',
+        explanation: "Do not use the preposition 'on' before 'yesterday', 'today', or 'tomorrow'."
+      },
+      {
+        pattern: /\bin\s+the\s+night\b/gi,
+        type: 'Preposition Error',
+        severity: 'warning',
+        replacement: 'at night',
+        explanation: "Standard English uses 'at night' (or 'during the night' for specific occurrences)."
+      },
+      {
+        pattern: /\bpay\s+attention\s+on\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'pay attention to',
+        explanation: "The correct idiom is 'pay attention to', not 'pay attention on'."
+      },
+      {
+        pattern: /\bcongratulate\s+(?:him|her|them|someone|you)\s+for\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'congratulate on',
+        explanation: "You congratulate someone 'on' an achievement or event, not 'for'."
+      },
+      {
+        pattern: /\bmarried\s+with\b/gi,
+        type: 'Preposition Error',
+        severity: 'error',
+        replacement: 'married to',
+        explanation: "In standard English, one is 'married to' someone, not 'married with'."
+      },
+      {
+        pattern: /\blook(?:ing)?\s+forward\s+to\s+(meet|hear|see|receive|work|visit)\b/gi,
+        type: 'Gerund Form Error',
+        severity: 'error',
+        replacement: 'look forward to $1ing',
+        explanation: "'Look forward to' is followed by a gerund (-ing form), e.g., 'look forward to $1ing'."
+      },
+      {
+        pattern: /\bcomprise\s+of\b/gi,
+        type: 'Preposition Redundancy',
+        severity: 'error',
+        replacement: 'comprise / consist of',
+        explanation: "'Comprise' does not take 'of'. Use 'comprise' alone or 'consist of'."
+      },
+      {
+        pattern: /\bdespite\s+of\b/gi,
+        type: 'Preposition Redundancy',
+        severity: 'error',
+        replacement: 'despite / in spite of',
+        explanation: "'Despite' never takes 'of'. Use 'despite' or 'in spite of'."
+      },
 
-      // 2. Double Comparative & Modal Errors
+      // 4. Uncountable Noun Traps
+      {
+        pattern: /\b(an\s+)?advices\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'advice / pieces of advice',
+        explanation: "'Advice' is uncountable in English. Use 'advice' or 'some pieces of advice'."
+      },
+      {
+        pattern: /\bfeedbacks\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'feedback',
+        explanation: "'Feedback' is uncountable. Use 'feedback' or 'pieces of feedback'."
+      },
+      {
+        pattern: /\binformations\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'information',
+        explanation: "'Information' is uncountable. Use 'information' or 'pieces of information'."
+      },
+      {
+        pattern: /\bfurnitures\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'furniture',
+        explanation: "'Furniture' is uncountable. Use 'furniture' or 'items of furniture'."
+      },
+      {
+        pattern: /\bluggages\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'luggage',
+        explanation: "'Luggage' is uncountable. Use 'luggage' or 'bags'."
+      },
+      {
+        pattern: /\bequipments\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'equipment',
+        explanation: "'Equipment' is uncountable. Use 'equipment' or 'pieces of equipment'."
+      },
+      {
+        pattern: /\bhomeworks\b/gi,
+        type: 'Uncountable Noun',
+        severity: 'error',
+        replacement: 'homework',
+        explanation: "'Homework' is uncountable. Use 'homework' or 'assignments'."
+      },
+
+      // 5. Stative Verbs in Continuous Form Trap
+      {
+        pattern: /\b(am|is|are|was|were)\s+having\s+(a\s+|an\s+)?(car|bike|laptop|phone|house|dog|cat|sister|brother|doubt|question|meeting)\b/gi,
+        type: 'Stative Verb Error',
+        severity: 'warning',
+        replacement: 'have $2$3',
+        explanation: "When expressing possession or relationship, 'have' is stative and not used in continuous '-ing' form (e.g. 'have $2$3')."
+      },
+
+      // 6. Double Comparative & Modal Errors
       {
         pattern: /\bcould\s+able\s+to\b/gi,
         type: 'Modal Redundancy',
         severity: 'error',
         replacement: 'was able to / could',
         explanation: "'Could' and 'able to' mean the same ability. Use either 'could' or 'was able to'."
+      },
+      {
+        pattern: /\bcan\s+be\s+able\s+to\b/gi,
+        type: 'Modal Redundancy',
+        severity: 'error',
+        replacement: 'can / will be able to',
+        explanation: "Use either 'can' or 'will be able to'."
       },
       {
         pattern: /\bmore\s+better\b/gi,
@@ -115,7 +433,7 @@ class EnglishAnalyzer {
         explanation: "Use 'faster', not 'more faster'."
       },
 
-      // 3. Subject-Verb Agreement Common Traps
+      // 7. Subject-Verb Agreement Common Traps
       {
         pattern: /\beveryone\s+are\b/gi,
         type: 'Subject-Verb Agreement',
@@ -180,7 +498,7 @@ class EnglishAnalyzer {
         explanation: "Third-person singular 'it' requires singular verb 'saves'."
       },
 
-      // 4. Word Confusion (Homophones / Intermediate)
+      // 8. Word Confusion (Homophones / Intermediate)
       {
         pattern: /\btheir\s+is\b/gi,
         type: 'Confused Words',
