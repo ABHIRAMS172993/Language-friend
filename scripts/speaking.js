@@ -273,7 +273,7 @@ class SpeakingStudio {
     this.evaluateImpromptuSpeech();
   }
 
-  evaluateImpromptuSpeech() {
+  async evaluateImpromptuSpeech() {
     const resultBox = document.getElementById('impromptu-result-box');
     const transcriptEl = document.getElementById('impromptu-transcript-text');
     const wpmEl = document.getElementById('impromptu-wpm');
@@ -296,12 +296,19 @@ class SpeakingStudio {
     const minutes = Math.max(0.1, this.impromptuSeconds / 60);
     const wpm = Math.round(wordCount / minutes);
 
-    // Run analyzer on spoken text
-    const analysis = window.analyzer.analyze(text);
+    if (grammarEl) grammarEl.innerText = 'Analyzing...';
+
+    // Run unified AI/LanguageTool/NLP analyzer on spoken text
+    let analysis;
+    try {
+      analysis = await window.aiService.getWritingCritique(text);
+    } catch(e) {
+      analysis = window.analyzer.analyze(text);
+    }
 
     if (wpmEl) wpmEl.innerText = `${wpm} WPM`;
     if (wordsEl) wordsEl.innerText = wordCount;
-    if (grammarEl) grammarEl.innerText = analysis.metrics.grammar;
+    if (grammarEl) grammarEl.innerText = analysis.metrics?.grammar || `${analysis.score}%`;
     if (fluencyEl) fluencyEl.innerText = analysis.gradeLabel.split(' ')[0] || 'B2';
 
     app.incrementStats(wordCount);

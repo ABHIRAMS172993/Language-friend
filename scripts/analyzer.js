@@ -857,6 +857,111 @@ class EnglishAnalyzer {
         replacement: '$1 [base verb]',
         explanation: "Plural subjects ('$1') take base verb forms without '-s'."
       },
+      {
+        pattern: /\b(I|you|we|they)\s+has\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 have',
+        explanation: "The subject '$1' takes the verb 'have', not 'has'."
+      },
+      {
+        pattern: /\b(he|she|it|this|that)\s+have\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 has',
+        explanation: "Third-person singular '$1' requires 'has', not 'have'."
+      },
+      {
+        pattern: /\b(he|she|it)\s+(are|were)\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 is / was',
+        explanation: "Singular pronoun '$1' requires singular 'is' or 'was'."
+      },
+      {
+        pattern: /\b(they|we|you)\s+(is|was)\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: '$1 are / were',
+        explanation: "Plural pronoun '$1' requires plural 'are' or 'were'."
+      },
+      {
+        pattern: /\bI\s+is\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: 'I am',
+        explanation: "The first-person pronoun 'I' takes 'am', not 'is'."
+      },
+      {
+        pattern: /\bI\s+are\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: 'I am',
+        explanation: "The first-person pronoun 'I' takes 'am', not 'are'."
+      },
+      {
+        pattern: /\b(he|she|it)\s+dont\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: "$1 doesn't",
+        explanation: "Third-person singular '$1' takes \"doesn't\", not \"don't\"."
+      },
+      {
+        pattern: /\b(I|you|we|they)\s+doesnt\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: "$1 don't",
+        explanation: "Subject '$1' takes \"don't\", not \"doesn't\"."
+      },
+      {
+        pattern: /\b(there)\s+is\s+([0-9]+|many|several|two|three|four|five|few|[a-z]+s)\b/gi,
+        type: 'Subject-Verb Agreement',
+        severity: 'error',
+        replacement: 'there are $2',
+        explanation: "Use 'there are' with plural nouns or quantities ('$2')."
+      },
+      {
+        pattern: /\bmore\s+(taller|faster|bigger|smaller|stronger|easier|harder|cooler|warmer|quicker|slower|older|younger|richer|poorer|cheaper|heavier|happier|later)\b/gi,
+        type: 'Double Comparative',
+        severity: 'error',
+        replacement: '$1',
+        explanation: "'$1' is already in comparative form. Do not add 'more'."
+      },
+      {
+        pattern: /\bmost\s+(tallest|fastest|best|biggest|smallest|strongest|easiest|hardest|greatest|coolest|oldest|youngest)\b/gi,
+        type: 'Double Superlative',
+        severity: 'error',
+        replacement: '$1',
+        explanation: "'$1' is already superlative. Do not add 'most'."
+      },
+      {
+        pattern: /\b(two|three|four|five|six|seven|eight|nine|ten|many|several|few)\s+(car|boy|girl|book|student|year|month|day|friend|problem|item|apple|dollar|cat|dog|table|question)\b/gi,
+        type: 'Plural Agreement',
+        severity: 'error',
+        replacement: '$1 $2s',
+        explanation: "Quantifier '$1' requires a plural noun ('$1 $2s')."
+      },
+      {
+        pattern: /\bI\s+am\s+agree\b/gi,
+        type: 'Verb Usage',
+        severity: 'error',
+        replacement: 'I agree',
+        explanation: "'Agree' is a verb in English. Say 'I agree', not 'I am agree'."
+      },
+      {
+        pattern: /\bwhy\s+you\s+(didn't|did\s+not|are|were|have|had)\b/gi,
+        type: 'Question Inversion',
+        severity: 'error',
+        replacement: 'why $1 you',
+        explanation: "In standard English questions, invert the auxiliary verb and subject ('why $1 you')."
+      },
+      {
+        pattern: /\bwhere\s+you\s+(are|were|have|had)\b/gi,
+        type: 'Question Inversion',
+        severity: 'error',
+        replacement: 'where $1 you',
+        explanation: "In standard English questions, invert auxiliary verb and subject ('where $1 you')."
+      },
 
       // -------------------------------------------------------------
       // 9. Word Confusion (Homophones / Intermediate)
