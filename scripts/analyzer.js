@@ -28,6 +28,34 @@ class EnglishAnalyzer {
       // 0. High-Frequency Spacing, Pronouns, Contractions & Typos
       // -------------------------------------------------------------
       {
+        pattern: /(^|[\n\r])\s*(Hi|Hello|Hey|Dear)\s+([A-Z][a-z]+|I\s+am|I'm|everyone|all)\b/g,
+        type: 'Greeting Punctuation',
+        severity: 'warning',
+        replacement: '$1$2, $3',
+        explanation: "Add a comma after greetings (e.g. '$2, $3')."
+      },
+      {
+        pattern: /([a-zA-Z0-9])([.!?])([A-Z])/g,
+        type: 'Typography & Spacing',
+        severity: 'error',
+        replacement: '$1$2 $3',
+        explanation: "Add a space between sentences after punctuation ('$1$2 $3')."
+      },
+      {
+        pattern: /\b(had\s+not|hadn't|had)\s+(gone|been|visited|seen|eaten|worked|met|lived|talked|spoken|written|called)\s+([^.!?]*?\b(?:for|since)\b[^.!?]*?\b(?:now|until\s+now|so\s+far)\b)/gi,
+        type: 'Tense Consistency',
+        severity: 'error',
+        replacement: 'have not been $3 / have not $2 $3',
+        explanation: "Do not use past perfect ('$1 $2') with time expressions referencing the present moment ('now / so far'). Use present perfect ('have not been / haven't gone')."
+      },
+      {
+        pattern: /\b(have|haven't|have\s+not|had|hadn't|had\s+not)\s+gone\s+(there|home|away)\s+for\s+(\d+|[a-zA-Z]+)\s+(days|weeks|months|years)\b/gi,
+        type: 'Collocation & Aspect',
+        severity: 'error',
+        replacement: '$1 been $2 for $3 $4',
+        explanation: "When referring to duration of visits or absence, use 'been' instead of 'gone' (e.g. '$1 been $2 for $3 $4')."
+      },
+      {
         pattern: /\bIam\b/g,
         type: 'Spacing & Contraction',
         severity: 'error',
