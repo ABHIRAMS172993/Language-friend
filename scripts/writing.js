@@ -1,5 +1,6 @@
 /**
  * FLUENTLY - Writing Lab & Essay Reviewer
+ * Integrated with IndexedDB database for persistent notes and analysis history.
  */
 
 class WritingCoach {
@@ -33,7 +34,9 @@ class WritingCoach {
       "What are the advantages and drawbacks of social media on young adults' attention spans?"
     ];
 
+    this.currentActiveNoteId = null;
     this.initEvents();
+    this.updateDbBadges();
   }
 
   initEvents() {
@@ -65,9 +68,26 @@ class WritingCoach {
     // Clear editor
     document.getElementById('btn-clear-editor').addEventListener('click', () => {
       this.textarea.value = '';
+      this.currentActiveNoteId = null;
       this.updateCounts();
       this.resetFeedback();
     });
+
+    // Save Draft/Note button
+    const saveNoteBtn = document.getElementById('btn-save-note');
+    if (saveNoteBtn) {
+      saveNoteBtn.addEventListener('click', () => {
+        this.openSaveNoteModal();
+      });
+    }
+
+    // Open History & Notes button
+    const openHistoryBtn = document.getElementById('btn-open-writing-history');
+    if (openHistoryBtn) {
+      openHistoryBtn.addEventListener('click', () => {
+        this.openHistoryModal('notes');
+      });
+    }
 
     // Copy polished text
     document.getElementById('btn-copy-polished').addEventListener('click', () => {
@@ -104,6 +124,42 @@ class WritingCoach {
         if (pane) pane.classList.add('active');
       });
     });
+
+    // History Modal Tabs
+    document.querySelectorAll('.history-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.history-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.history-tab-pane').forEach(p => p.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        const tabTarget = e.currentTarget.getAttribute('data-htab');
+        const pane = document.getElementById(`htab-pane-${tabTarget}`);
+        if (pane) pane.classList.add('active');
+      });
+    });
+
+    // Close History Modal
+    const closeHistModalBtn = document.getElementById('btn-close-history-modal');
+    if (closeHistModalBtn) {
+      closeHistModalBtn.addEventListener('click', () => {
+        document.getElementById('writing-history-modal').style.display = 'none';
+      });
+    }
+
+    // Close Save Note Modal
+    const closeSaveModalBtn = document.getElementById('btn-close-savenote-modal');
+    if (closeSaveModalBtn) {
+      closeSaveModalBtn.addEventListener('click', () => {
+        document.getElementById('save-note-modal').style.display = 'none';
+      });
+    }
+
+    // Confirm Save Note
+    const confirmSaveBtn = document.getElementById('btn-confirm-save-note');
+    if (confirmSaveBtn) {
+      confirmSaveBtn.addEventListener('click', () => {
+        this.handleSaveNoteSubmit();
+      });
+    }
   }
 
   adjustTone(tone) {
@@ -194,8 +250,9 @@ class WritingCoach {
     this.scoreLabelEl.innerText = "Analyzing grammar & style...";
     this.scoreValEl.innerText = "..";
 
+    let result = null;
     try {
-      const result = await window.aiService.getWritingCritique(text);
+      result = await window.aiService.getWritingCritique(text);
 
       // Update Scores
       this.scoreValEl.innerText = result.score !== undefined ? result.score : '--';
@@ -220,7 +277,7 @@ class WritingCoach {
       app.showToast(`Analysis complete! Detected ${issueList.length} potential improvements.`, 'success');
     } catch (err) {
       console.error('Analysis error:', err);
-      const result = window.analyzer.analyze(text);
+      result = window.analyzer.analyze(text);
       this.scoreValEl.innerText = result.score;
       this.scoreLabelEl.innerText = result.gradeLabel;
       this.metricGrammar.innerText = result.metrics.grammar;
@@ -231,6 +288,27 @@ class WritingCoach {
       this.polishedTextContainer.innerHTML = `<p>${result.polishedText}</p>`;
       this.renderVocabUpgrades(result.vocabSuggestions);
       app.showToast('Analysis completed using local grammar engine.', 'info');
+    }
+
+    // Save to Database (IndexedDB)
+    if (result && window.fluentlyDB) {
+      try {
+        const promptTitle = (this.activePromptBanner.style.display !== 'none') ? this.activePromptText.innerText : '';
+        await window.fluentlyDB.saveReview({
+          title: promptTitle ? `Prompt: ${promptTitle.slice(0, 40)}...` : undefined,
+          originalText: text,
+          polishedText: result.polishedText || '',
+          score: result.score,
+          gradeLabel: result.gradeLabel,
+          metrics: result.metrics,
+          issues: result.issues || [],
+          vocabSuggestions: result.vocabSuggestions || [],
+          wordCount: text.split(/\s+/).filter(Boolean).length
+        });
+        this.updateDbBadges();
+      } catch (dbErr) {
+        console.warn('Database review save error:', dbErr);
+      }
     }
   }
 
@@ -246,7 +324,7 @@ class WritingCoach {
     }
 
     let html = '';
-    issues.forEach((issue, idx) => {
+    issues.forEach((issue) => {
       const fixTarget = issue.replacement.split(' / ')[0].replace(/\$[0-9]/g, '').trim();
       html += `
         <div class="issue-item ${issue.severity === 'warning' ? 'warning' : ''}">
@@ -310,6 +388,261 @@ class WritingCoach {
       </div>`;
     this.polishedTextContainer.innerHTML = `<p class="text-muted">Polished text will appear here once analyzed.</p>`;
     this.vocabUpgradesContainer.innerHTML = `<p class="text-muted">High-impact synonym upgrades will be shown here.</p>`;
+  }
+
+  // ==========================================
+  // DATABASE NOTES & HISTORY MODAL
+  // ==========================================
+
+  openSaveNoteModal() {
+    const text = this.textarea.value.trim();
+    if (!text) {
+      app.showToast('Please type some text before saving as a note or draft.', 'warning');
+      return;
+    }
+
+    const modal = document.getElementById('save-note-modal');
+    const titleInput = document.getElementById('save-note-title');
+    const tagInput = document.getElementById('save-note-tag');
+    const previewEl = document.getElementById('save-note-preview');
+
+    if (!titleInput.value) {
+      const firstLine = text.split('\n')[0].slice(0, 35);
+      titleInput.value = firstLine.length > 3 ? firstLine : 'Draft - ' + new Date().toLocaleDateString();
+    }
+    previewEl.innerText = text.slice(0, 180) + (text.length > 180 ? '...' : '');
+
+    modal.style.display = 'flex';
+  }
+
+  async handleSaveNoteSubmit() {
+    const title = document.getElementById('save-note-title').value.trim() || 'Untitled Note';
+    const tag = document.getElementById('save-note-tag').value.trim();
+    const content = this.textarea.value.trim();
+
+    if (!content) {
+      app.showToast('Note content cannot be empty.', 'error');
+      return;
+    }
+
+    try {
+      await window.fluentlyDB.saveNote({
+        id: this.currentActiveNoteId,
+        title,
+        content,
+        tags: tag ? [tag] : ['Writing Lab']
+      });
+
+      document.getElementById('save-note-modal').style.display = 'none';
+      app.showToast(`Note "${title}" saved to database!`, 'success');
+      this.updateDbBadges();
+    } catch (e) {
+      console.error(e);
+      app.showToast('Failed to save note to database.', 'error');
+    }
+  }
+
+  async openHistoryModal(defaultTab = 'notes') {
+    const modal = document.getElementById('writing-history-modal');
+    modal.style.display = 'flex';
+
+    // Switch tab
+    document.querySelectorAll('.history-tab-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-htab') === defaultTab);
+    });
+    document.querySelectorAll('.history-tab-pane').forEach(p => {
+      p.classList.toggle('active', p.id === `htab-pane-${defaultTab}`);
+    });
+
+    await this.renderSavedNotesList();
+    await this.renderReviewsHistoryList();
+  }
+
+  async renderSavedNotesList() {
+    const container = document.getElementById('notes-history-list');
+    if (!container) return;
+
+    try {
+      const notes = await window.fluentlyDB.getNotes();
+      if (notes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📒</div>
+            <h3>No Saved Notes Yet</h3>
+            <p>Write an essay or draft in Writing Lab and click <strong>"Save Note"</strong> to store it here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      notes.forEach(note => {
+        const dateStr = new Date(note.updatedAt || note.createdAt).toLocaleString();
+        const wordCount = note.content ? note.content.split(/\s+/).filter(Boolean).length : 0;
+        const tag = (note.tags && note.tags[0]) || 'Draft';
+
+        html += `
+          <div class="history-item-card">
+            <div class="history-card-top">
+              <div class="history-title-area">
+                <h4>${this.escapeHtml(note.title)}</h4>
+                <div class="history-meta">
+                  <span class="history-tag">${this.escapeHtml(tag)}</span>
+                  <span>${wordCount} words</span>
+                  <span>•</span>
+                  <span>${dateStr}</span>
+                </div>
+              </div>
+              <div class="history-actions">
+                <button class="btn btn-sm btn-primary" onclick="writingCoach.loadNoteIntoEditor('${note.id}')">📝 Open in Editor</button>
+                <button class="btn btn-sm btn-danger" onclick="writingCoach.deleteNote('${note.id}')">🗑️</button>
+              </div>
+            </div>
+            <div class="history-snippet">${this.escapeHtml(note.content)}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    } catch (err) {
+      container.innerHTML = `<p class="text-danger">Failed to load notes: ${err.message}</p>`;
+    }
+  }
+
+  async renderReviewsHistoryList() {
+    const container = document.getElementById('reviews-history-list');
+    if (!container) return;
+
+    try {
+      const reviews = await window.fluentlyDB.getReviews();
+      if (reviews.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>No Review History Yet</h3>
+            <p>Every time you click <strong>"Analyze & Correct"</strong>, your score, identified issues, and polished version will be saved here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      reviews.forEach(rev => {
+        const dateStr = new Date(rev.timestamp).toLocaleString();
+        const scoreVal = rev.score !== null ? `${rev.score}/100` : '--';
+        const issuesCount = rev.issues ? rev.issues.length : 0;
+
+        html += `
+          <div class="history-item-card">
+            <div class="history-card-top">
+              <div class="history-title-area">
+                <h4>${this.escapeHtml(rev.title)}</h4>
+                <div class="history-meta">
+                  <span class="history-score-badge">Score: ${scoreVal} (${rev.gradeLabel || 'Evaluated'})</span>
+                  <span class="history-issues-badge">${issuesCount} corrections</span>
+                  <span>•</span>
+                  <span>${dateStr}</span>
+                </div>
+              </div>
+              <div class="history-actions">
+                <button class="btn btn-sm btn-outline" onclick="writingCoach.loadReviewIntoEditor('${rev.id}')">✏️ Reload Text</button>
+                <button class="btn btn-sm btn-danger" onclick="writingCoach.deleteReview('${rev.id}')">🗑️</button>
+              </div>
+            </div>
+
+            <div class="history-review-diff">
+              <div class="diff-block">
+                <strong>Original:</strong>
+                <p>${this.escapeHtml(rev.originalText)}</p>
+              </div>
+              ${rev.polishedText ? `
+                <div class="diff-block polished">
+                  <strong>Polished C1:</strong>
+                  <p>${this.escapeHtml(rev.polishedText)}</p>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="history-note-field">
+              <label>Personal Learning Note:</label>
+              <div class="note-edit-row">
+                <input type="text" id="rev-note-${rev.id}" value="${this.escapeHtml(rev.userNote || '')}" placeholder="Add a key takeaway (e.g., 'Remember past perfect tense')..." class="text-input-sm">
+                <button class="btn btn-sm btn-outline" onclick="writingCoach.saveReviewNote('${rev.id}')">Save Note</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    } catch (err) {
+      container.innerHTML = `<p class="text-danger">Failed to load reviews: ${err.message}</p>`;
+    }
+  }
+
+  async loadNoteIntoEditor(id) {
+    const notes = await window.fluentlyDB.getNotes();
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+
+    this.textarea.value = note.content;
+    this.currentActiveNoteId = note.id;
+    this.updateCounts();
+    document.getElementById('writing-history-modal').style.display = 'none';
+    app.switchTab('writing');
+    app.showToast(`Loaded note "${note.title}" into editor.`, 'success');
+  }
+
+  async deleteNote(id) {
+    if (!confirm('Are you sure you want to delete this saved note?')) return;
+    await window.fluentlyDB.deleteNote(id);
+    app.showToast('Note deleted from database.', 'info');
+    this.renderSavedNotesList();
+    this.updateDbBadges();
+  }
+
+  async loadReviewIntoEditor(id) {
+    const reviews = await window.fluentlyDB.getReviews();
+    const rev = reviews.find(r => r.id === id);
+    if (!rev) return;
+
+    this.textarea.value = rev.originalText;
+    this.currentActiveNoteId = null;
+    this.updateCounts();
+    document.getElementById('writing-history-modal').style.display = 'none';
+    app.switchTab('writing');
+    this.runAnalysis();
+    app.showToast('Loaded past review into editor and analyzed.', 'success');
+  }
+
+  async saveReviewNote(id) {
+    const input = document.getElementById(`rev-note-${id}`);
+    if (!input) return;
+    await window.fluentlyDB.updateReviewNotes(id, input.value.trim());
+    app.showToast('Personal learning note updated in database!', 'success');
+  }
+
+  async deleteReview(id) {
+    if (!confirm('Are you sure you want to delete this grammar review from history?')) return;
+    await window.fluentlyDB.deleteReview(id);
+    app.showToast('Review deleted from database.', 'info');
+    this.renderReviewsHistoryList();
+    this.updateDbBadges();
+  }
+
+  async updateDbBadges() {
+    if (!window.fluentlyDB) return;
+    try {
+      const stats = await window.fluentlyDB.getDatabaseStats();
+      const badge = document.getElementById('badge-writing-notes-count');
+      if (badge) {
+        badge.innerText = stats.notesCount + stats.reviewsCount;
+        badge.style.display = (stats.notesCount + stats.reviewsCount > 0) ? 'inline-block' : 'none';
+      }
+    } catch (e) {}
+  }
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 }
 

@@ -1,5 +1,7 @@
 /**
  * FLUENTLY - Conversational Roleplay Partner
+ * Integrated with IndexedDB database to persist dialogue sessions,
+ * previous chat messages, grammar badges, and conversation progression.
  */
 
 class DialoguePartner {
@@ -41,7 +43,7 @@ class DialoguePartner {
           "Certainly! I have your reservation under the standard deluxe suite for 3 nights. Could I please see your ID or passport?",
           "Thank you! Everything looks in order. Was there any specific preference you had regarding your room or floor level?",
           "Let me check our system for you. Yes! We have an executive suite on the 18th floor facing the city skyline. I can offer you a complimentary upgrade.",
-          "Here are your keycards. Breakfast is served on the 3rd floor from 6:30 to 10:30 AM. Is there anything else I can assist you with?"
+          "Here are your keycards. Breakfast is served on the 3rd floor from 6:30 to 10:30 AM. Is there anything else I can assist with?"
         ]
       },
       office_debate: {
@@ -97,7 +99,7 @@ class DialoguePartner {
     });
 
     document.getElementById('btn-restart-chat').addEventListener('click', () => {
-      this.loadScenario(this.currentScenarioKey);
+      this.restartCurrentScenario();
     });
 
     this.sendBtn.addEventListener('click', () => {
@@ -142,20 +144,60 @@ class DialoguePartner {
     }
   }
 
-  loadScenario(key) {
+  async loadScenario(key) {
     this.currentScenarioKey = key;
     const scen = this.scenarios[key];
     if (!scen) return;
 
-    this.stepIndex = 0;
     this.chatHistory = [];
     this.scenarioIcon.innerText = scen.icon;
     this.scenarioTitle.innerText = scen.title;
     this.scenarioDesc.innerText = scen.desc;
     this.streamBox.innerHTML = '';
 
-    // Add initial bot greeting
+    // Check Database for previous messages
+    let savedMessages = [];
+    if (window.fluentlyDB) {
+      try {
+        savedMessages = await window.fluentlyDB.getChatMessages(key);
+      } catch (e) {
+        console.warn('Could not read chat history from database:', e);
+      }
+    }
+
+    if (savedMessages && savedMessages.length > 0) {
+      // Re-hydrate UI from database history
+      savedMessages.forEach(msg => {
+        if (msg.role === 'user') {
+          this.renderUserMessageUI(msg.content, msg.feedback);
+          this.chatHistory.push({ role: 'user', content: msg.content });
+        } else {
+          this.renderBotMessageUI(msg.content);
+          this.chatHistory.push({ role: 'bot', content: msg.content });
+        }
+      });
+
+      // Calculate step index based on bot replies
+      const botMessagesCount = savedMessages.filter(m => m.role === 'bot').length;
+      this.stepIndex = Math.max(0, botMessagesCount - 1);
+    } else {
+      // Fresh conversation
+      this.stepIndex = 0;
+      this.addBotMessage(scen.initialGreeting);
+    }
+  }
+
+  async restartCurrentScenario() {
+    const key = this.currentScenarioKey;
+    if (window.fluentlyDB) {
+      await window.fluentlyDB.clearChatMessages(key);
+    }
+    const scen = this.scenarios[key];
+    this.stepIndex = 0;
+    this.chatHistory = [];
+    this.streamBox.innerHTML = '';
     this.addBotMessage(scen.initialGreeting);
+    app.showToast('Conversation reset. Previous chat messages cleared for this scenario.', 'info');
   }
 
   async handleUserSend() {
@@ -192,16 +234,16 @@ class DialoguePartner {
     }, 800);
   }
 
-  addUserMessage(text, analysis) {
+  renderUserMessageUI(text, analysis) {
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble user';
 
     let feedbackHtml = '';
-    if (analysis.issues && analysis.issues.length > 0) {
+    if (analysis && analysis.issues && analysis.issues.length > 0) {
       const firstIssue = analysis.issues[0];
       feedbackHtml = `
         <div class="grammar-feedback-badge has-error">
-          <span>⚠️ Fix: "${firstIssue.matched}" &rarr; <strong>"${firstIssue.replacement}"</strong> (${firstIssue.type})</span>
+          <span>⚠️ Fix: "${this.escapeHtml(firstIssue.matched)}" &rarr; <strong>"${this.escapeHtml(firstIssue.replacement)}"</strong> (${this.escapeHtml(firstIssue.type)})</span>
         </div>
       `;
     } else {
@@ -215,32 +257,68 @@ class DialoguePartner {
     bubble.innerHTML = `
       <div class="bubble-avatar">👤</div>
       <div class="bubble-content">
-        <div class="bubble-text">${text}</div>
+        <div class="bubble-text">${this.escapeHtml(text)}</div>
         ${feedbackHtml}
       </div>
     `;
 
     this.streamBox.appendChild(bubble);
     this.streamBox.scrollTop = this.streamBox.scrollHeight;
-    this.chatHistory.push({ role: 'user', content: text });
-    app.incrementStats(text.split(/\s+/).length);
   }
 
-  addBotMessage(text) {
+  renderBotMessageUI(text) {
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble bot';
 
     bubble.innerHTML = `
       <div class="bubble-avatar">${this.scenarios[this.currentScenarioKey].icon}</div>
       <div class="bubble-content">
-        <div class="bubble-text">${text}</div>
+        <div class="bubble-text">${this.escapeHtml(text)}</div>
         <button class="chat-speak-btn" onclick="dialoguePartner.speakBotText('${encodeURIComponent(text)}')">🔊 Listen</button>
       </div>
     `;
 
     this.streamBox.appendChild(bubble);
     this.streamBox.scrollTop = this.streamBox.scrollHeight;
+  }
+
+  async addUserMessage(text, analysis) {
+    this.renderUserMessageUI(text, analysis);
+    this.chatHistory.push({ role: 'user', content: text });
+    app.incrementStats(text.split(/\s+/).filter(Boolean).length);
+
+    // Save to Database
+    if (window.fluentlyDB) {
+      try {
+        await window.fluentlyDB.saveChatMessage({
+          scenarioKey: this.currentScenarioKey,
+          role: 'user',
+          content: text,
+          feedback: analysis
+        });
+      } catch (err) {
+        console.warn('Database save chat message failed:', err);
+      }
+    }
+  }
+
+  async addBotMessage(text) {
+    this.renderBotMessageUI(text);
     this.chatHistory.push({ role: 'bot', content: text });
+
+    // Save to Database
+    if (window.fluentlyDB) {
+      try {
+        await window.fluentlyDB.saveChatMessage({
+          scenarioKey: this.currentScenarioKey,
+          role: 'bot',
+          content: text,
+          feedback: null
+        });
+      } catch (err) {
+        console.warn('Database save bot message failed:', err);
+      }
+    }
   }
 
   speakBotText(encodedText) {
@@ -251,6 +329,11 @@ class DialoguePartner {
     u.lang = 'en-US';
     u.rate = parseFloat(localStorage.getItem('fluently_voice_rate') || '0.95');
     window.speechSynthesis.speak(u);
+  }
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 }
 

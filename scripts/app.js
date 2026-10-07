@@ -149,6 +149,7 @@ class FluentlyApp {
     openBtn.addEventListener('click', () => {
       modal.style.display = 'flex';
       this.populateVoiceSelect();
+      this.populateDatabaseInfo();
     });
 
     closeBtn.addEventListener('click', () => {
@@ -175,6 +176,47 @@ class FluentlyApp {
       this.showToast('Settings successfully saved!', 'success');
     });
 
+    // Database Export
+    const exportDbBtn = document.getElementById('btn-export-db');
+    if (exportDbBtn) {
+      exportDbBtn.addEventListener('click', async () => {
+        if (!window.fluentlyDB) return;
+        try {
+          const exportData = await window.fluentlyDB.exportAllData();
+          const jsonStr = JSON.stringify(exportData, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `fluently_data_backup_${new Date().toISOString().slice(0, 10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          this.showToast('Database successfully exported to JSON!', 'success');
+        } catch (err) {
+          this.showToast('Export failed: ' + err.message, 'error');
+        }
+      });
+    }
+
+    // Database Clear
+    const clearDbBtn = document.getElementById('btn-clear-db');
+    if (clearDbBtn) {
+      clearDbBtn.addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to clear all stored chat messages, notes, and grammar review history from IndexedDB?')) return;
+        if (!window.fluentlyDB) return;
+        try {
+          await window.fluentlyDB.clearAllData();
+          if (window.writingCoach) {
+            window.writingCoach.updateDbBadges();
+          }
+          this.populateDatabaseInfo();
+          this.showToast('Database wiped clean.', 'info');
+        } catch (err) {
+          this.showToast('Clear failed: ' + err.message, 'error');
+        }
+      });
+    }
+
     document.getElementById('btn-reset-stats').addEventListener('click', () => {
       this.totalWords = 0;
       this.speakingScores = [85];
@@ -184,6 +226,22 @@ class FluentlyApp {
       modal.style.display = 'none';
       this.showToast('Daily stats reset.', 'info');
     });
+  }
+
+  async populateDatabaseInfo() {
+    const dbStatusEl = document.getElementById('db-status-label');
+    const dbCountEl = document.getElementById('db-records-count');
+    if (!window.fluentlyDB || !dbStatusEl) return;
+
+    try {
+      const stats = await window.fluentlyDB.getDatabaseStats();
+      dbStatusEl.innerHTML = `<span style="color:var(--accent-success); font-weight:700;">🟢 Connected (IndexedDB)</span>`;
+      if (dbCountEl) {
+        dbCountEl.innerText = `${stats.chatCount} chats · ${stats.notesCount} notes · ${stats.reviewsCount} reviews`;
+      }
+    } catch (e) {
+      dbStatusEl.innerText = '🔴 Disconnected';
+    }
   }
 
   populateVoiceSelect() {

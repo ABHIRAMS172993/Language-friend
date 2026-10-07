@@ -201,8 +201,10 @@
               <p>Detect grammar slips, tense inconsistencies, weak vocabulary, and Indian/ESL idioms.</p>
             </div>
             <div class="module-actions">
-              <button class="btn btn-outline" id="btn-writing-prompt">🎲 New Writing Topic</button>
-              <button class="btn btn-outline" id="btn-sample-writing">Load Sample Essay</button>
+              <button class="btn btn-outline" id="btn-save-note" title="Save current essay as a note/draft">💾 Save Note</button>
+              <button class="btn btn-outline" id="btn-open-writing-history" title="View past notes and AI reviews">📚 Notes & History <span class="badge" id="badge-writing-notes-count" style="display:none; margin-left:4px;">0</span></button>
+              <button class="btn btn-outline" id="btn-writing-prompt">🎲 Topic</button>
+              <button class="btn btn-outline" id="btn-sample-writing">Sample</button>
               <button class="btn btn-primary" id="btn-analyze-writing">🔍 Analyze & Correct</button>
             </div>
           </div>
@@ -606,10 +608,83 @@
             <!-- Populated with browser SpeechSynthesis voices -->
           </select>
         </div>
+
+        <div class="setting-group db-card-setting">
+          <label>Local Database (Persistent Storage):</label>
+          <div class="db-status-row">
+            <span id="db-status-label"><span style="color:var(--accent-success); font-weight:700;">🟢 Connected (IndexedDB)</span></span>
+            <span id="db-records-count" class="db-stats-badge">Loading...</span>
+          </div>
+          <small class="setting-hint">Your chat history, essays, notes, and AI reviews are stored locally in your browser's IndexedDB engine.</small>
+          <div class="db-actions-row">
+            <button class="btn btn-sm btn-outline" id="btn-export-db" type="button">📥 Export Backup (JSON)</button>
+            <button class="btn btn-sm btn-danger-outline" id="btn-clear-db" type="button">🗑️ Clear Database</button>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="btn-reset-stats">Reset Daily Progress</button>
         <button class="btn btn-primary" id="btn-save-settings">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Note / Draft Modal -->
+  <div class="modal-backdrop" id="save-note-modal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Save Note / Writing Draft</h3>
+        <button class="modal-close" id="btn-close-savenote-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label for="save-note-title">Note Title:</label>
+          <input type="text" id="save-note-title" class="text-input" placeholder="e.g., Job Interview Pitch, Letter to Manager...">
+        </div>
+        <div class="setting-group">
+          <label for="save-note-tag">Category / Tag:</label>
+          <input type="text" id="save-note-tag" class="text-input" placeholder="e.g., Business, Essay, Grammar Drill, Daily...">
+        </div>
+        <div class="setting-group">
+          <label>Preview:</label>
+          <div id="save-note-preview" class="note-preview-box"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="document.getElementById('save-note-modal').style.display='none'">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-save-note">💾 Save to Database</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Writing Lab Notes & AI History Modal -->
+  <div class="modal-backdrop" id="writing-history-modal" style="display:none;">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div>
+          <h3>Writing Lab Notes & AI Grammar History</h3>
+          <p class="modal-subtitle">Stored in your local database</p>
+        </div>
+        <button class="modal-close" id="btn-close-history-modal">✕</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="history-tab-btn active" data-htab="notes">📒 Saved Notes & Drafts</button>
+        <button class="history-tab-btn" data-htab="reviews">📊 AI Grammar Review History</button>
+      </div>
+      <div class="modal-body history-modal-body">
+        <!-- Tab 1: Saved Notes -->
+        <div class="history-tab-pane active" id="htab-pane-notes">
+          <div class="history-list-wrapper" id="notes-history-list">
+            <!-- Populated via writing.js -->
+          </div>
+        </div>
+
+        <!-- Tab 2: AI Review History -->
+        <div class="history-tab-pane" id="htab-pane-reviews">
+          <div class="history-list-wrapper" id="reviews-history-list">
+            <!-- Populated via writing.js -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -630,12 +705,13 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="scripts/analyzer.js?v=3"></script>
-  <script src="scripts/ai-service.js?v=3"></script>
-  <script src="scripts/writing.js?v=3"></script>
-  <script src="scripts/speaking.js?v=3"></script>
-  <script src="scripts/reading.js?v=3"></script>
-  <script src="scripts/dialogue.js?v=3"></script>
-  <script src="scripts/app.js?v=3"></script>
+  <script src="scripts/database.js?v=4"></script>
+  <script src="scripts/analyzer.js?v=4"></script>
+  <script src="scripts/ai-service.js?v=4"></script>
+  <script src="scripts/writing.js?v=4"></script>
+  <script src="scripts/speaking.js?v=4"></script>
+  <script src="scripts/reading.js?v=4"></script>
+  <script src="scripts/dialogue.js?v=4"></script>
+  <script src="scripts/app.js?v=4"></script>
 </body>
 </html>
