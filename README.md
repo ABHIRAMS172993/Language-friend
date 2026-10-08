@@ -8,7 +8,9 @@ Fluently is a modern web application designed for **intermediate English learner
 
 ## 🌟 Features
 
-### ✍️ 1. Writing Lab & AI Grammar Reviewer
+### ✍️ 1. Writing Lab & AI Grammar & Spelling Reviewer
+- **Comprehensive Spelling Check**: Identifies common ESL/intermediate spelling traps, double consonant errors (*"occurred"*, *"recommended"*, *"successful"*), silent letters, vowel mixups (*"receive"*, *"separate"*, *"definitely"*), and confusing homophones (*"their/there"*, *"affect/effect"*, *"lose/loose"*).
+- **Dedicated Spelling Check Tab & 1-Click Fix All**: Review isolated spelling mistakes with mnemonic tips, or click **"⚡ Fix All Spelling"** to correct all typos simultaneously.
 - **Instant Error Detection**: Flags subtle intermediate grammar mistakes (subject-verb agreement, double past tense e.g. *"did not knew"*, missing prepositions).
 - **ESL & Regional Traps**: Identifies redundant or non-standard phrases (*"revert back"*, *"prepone"*, *"passed out from college"*, *"discuss about"*).
 - **1-Click Corrections**: Apply suggested grammar corrections directly to the text editor.

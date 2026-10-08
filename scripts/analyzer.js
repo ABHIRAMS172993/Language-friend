@@ -239,7 +239,7 @@ class EnglishAnalyzer {
       },
 
       // -------------------------------------------------------------
-      // 1. Common English Spelling Mistakes
+      // 1. Common English Spelling Mistakes & Typos
       // -------------------------------------------------------------
       {
         pattern: /\bteh\b/gi,
@@ -253,45 +253,52 @@ class EnglishAnalyzer {
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'receive',
-        explanation: "Remember: 'i' before 'e' except after 'c' ('receive')."
+        explanation: "Spelling rule: 'i' before 'e' except after 'c' ('receive')."
       },
       {
         pattern: /\bseperate\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'separate',
-        explanation: "Correct spelling is 'separate' (with 'a')."
+        explanation: "Correct spelling is 'separate' (remember: there is 'a rat' in sep-a-rat-e)."
       },
       {
         pattern: /\bdefinately\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'definitely',
-        explanation: "Correct spelling is 'definitely'."
+        explanation: "Correct spelling is 'definitely' (contains 'finite', with 'i')."
       },
       {
         pattern: /\buntill\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'until',
-        explanation: "'Until' has only one 'l'."
+        explanation: "'Until' is spelled with only one 'l'."
       },
       {
         pattern: /\boccured\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'occurred',
-        explanation: "'Occurred' is spelled with double 'r'."
+        explanation: "'Occurred' is spelled with double 'r' ('occurred')."
+      },
+      {
+        pattern: /\boccurence\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'occurrence',
+        explanation: "'Occurrence' is spelled with double 'c' and double 'r'."
       },
       {
         pattern: /\btruely\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'truly',
-        explanation: "'Truly' drops the 'e'."
+        explanation: "'Truly' drops the 'e' from 'true'."
       },
       {
-        pattern: /\btommorrow\b/gi,
+        pattern: /\btommorrow\b|\btomorow\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'tomorrow',
@@ -302,63 +309,77 @@ class EnglishAnalyzer {
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'government',
-        explanation: "'Government' contains an 'n' before 'm'."
+        explanation: "'Government' contains an 'n' before 'm' (govern + ment)."
       },
       {
         pattern: /\benviroment\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'environment',
-        explanation: "'Environment' contains an 'n' before 'm'."
+        explanation: "'Environment' contains an 'n' before 'm' (environ + ment)."
       },
       {
-        pattern: /\brecomended\b/gi,
+        pattern: /\brecomended\b|\breccomend\b|\breccommend\b/gi,
         type: 'Spelling Error',
         severity: 'error',
-        replacement: 'recommended',
-        explanation: "'Recommended' has double 'm'."
+        replacement: 'recommend / recommended',
+        explanation: "'Recommend' is spelled with one 'c' and double 'm'."
       },
       {
-        pattern: /\bsucessful\b/gi,
+        pattern: /\bsucessful\b|\bsucess\b/gi,
         type: 'Spelling Error',
         severity: 'error',
-        replacement: 'successful',
-        explanation: "'Successful' is spelled with double 'c' and double 's'."
+        replacement: 'successful / success',
+        explanation: "'Success' and 'successful' are spelled with double 'c' and double 's'."
       },
       {
         pattern: /\baccross\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'across',
-        explanation: "'Across' has one 'c'."
+        explanation: "'Across' is spelled with a single 'c'."
       },
       {
-        pattern: /\bbecuase\b/gi,
+        pattern: /\bbecuase\b|\bbecouse\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'because',
-        explanation: "Typo for 'because'."
+        explanation: "Correct spelling is 'because'."
       },
       {
-        pattern: /\bbeleive\b/gi,
+        pattern: /\bbeleive\b|\bbeleif\b/gi,
         type: 'Spelling Error',
         severity: 'error',
-        replacement: 'believe',
-        explanation: "Correct spelling is 'believe' ('ie')."
+        replacement: 'believe / belief',
+        explanation: "Correct spelling is 'believe' ('ie', 'i' before 'e')."
+      },
+      {
+        pattern: /\bacheive\b|\bacheivment\b|\bachivement\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'achieve / achievement',
+        explanation: "Correct spelling is 'achieve' ('ie')."
       },
       {
         pattern: /\bwritting\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'writing',
-        explanation: "'Writing' has a single 't'."
+        explanation: "'Writing' has a single 't'. 'Written' has double 't'."
+      },
+      {
+        pattern: /\bwriten\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'written',
+        explanation: "Past participle 'written' is spelled with double 't'."
       },
       {
         pattern: /\bpronounciation\b/gi,
         type: 'Spelling Error',
         severity: 'error',
         replacement: 'pronunciation',
-        explanation: "'Pronunciation' has 'nun', not 'noun'."
+        explanation: "'Pronunciation' is spelled with 'nun' (not 'noun')."
       },
       {
         pattern: /\bgrammer\b/gi,
@@ -366,6 +387,251 @@ class EnglishAnalyzer {
         severity: 'error',
         replacement: 'grammar',
         explanation: "'Grammar' ends with 'ar', not 'er'."
+      },
+      {
+        pattern: /\baccomodate\b|\baccomodation\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'accommodate / accommodation',
+        explanation: "'Accommodate' has double 'c' and double 'm'."
+      },
+      {
+        pattern: /\bembaras\b|\bembarass\b|\bembarassing\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'embarrass / embarrassing',
+        explanation: "'Embarrass' is spelled with double 'r' and double 's'."
+      },
+      {
+        pattern: /\bprivelege\b|\bpriviledge\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'privilege',
+        explanation: "'Privilege' is spelled with 'i-e-g-e' (no 'd')."
+      },
+      {
+        pattern: /\bmaintainance\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'maintenance',
+        explanation: "Correct spelling is 'maintenance' (contains 'ten', not 'tain')."
+      },
+      {
+        pattern: /\bexistance\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'existence',
+        explanation: "'Existence' ends with 'ence', not 'ance'."
+      },
+      {
+        pattern: /\bindependant\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'independent',
+        explanation: "'Independent' ends with 'ent', not 'ant'."
+      },
+      {
+        pattern: /\bbusiness\b|\bbuisness\b|\bbussiness\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'business',
+        explanation: "Correct spelling is 'business' (b-u-s-i-n-e-s-s)."
+      },
+      {
+        pattern: /\bcalender\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'calendar',
+        explanation: "'Calendar' ends with 'ar', not 'er'."
+      },
+      {
+        pattern: /\bcollaegue\b|\bcolleage\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'colleague',
+        explanation: "'Colleague' is spelled c-o-l-l-e-a-g-u-e."
+      },
+      {
+        pattern: /\bconcious\b|\bconsious\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'conscious',
+        explanation: "Correct spelling is 'conscious' (contains 'sci')."
+      },
+      {
+        pattern: /\bnoticeble\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'noticeable',
+        explanation: "'Noticeable' retains the 'e' before '-able' to keep the soft 'c' sound."
+      },
+      {
+        pattern: /\bunnecesary\b|\bunnecessary\b|\bunneccessary\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'unnecessary',
+        explanation: "'Unnecessary' is spelled with double 'n' and double 's'."
+      },
+      {
+        pattern: /\bproffesional\b|\bprofesional\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'professional',
+        explanation: "'Professional' is spelled with one 'f' and double 's'."
+      },
+      {
+        pattern: /\bdissapear\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'disappear',
+        explanation: "'Disappear' is spelled with one 's' and double 'p'."
+      },
+      {
+        pattern: /\bdissappoint\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'disappoint',
+        explanation: "'Disappoint' is spelled with one 's' and double 'p'."
+      },
+      {
+        pattern: /\bforiegn\b|\bforein\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'foreign',
+        explanation: "Correct spelling is 'foreign' (e before i, silent g)."
+      },
+      {
+        pattern: /\bgaurantee\b|\bgarantee\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'guarantee',
+        explanation: "'Guarantee' begins with 'gua' and ends with 'ee'."
+      },
+      {
+        pattern: /\bparalel\b|\bparellel\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'parallel',
+        explanation: "'Parallel' has double 'l' in the middle and single 'l' at the end."
+      },
+      {
+        pattern: /\brythm\b|\brhythm\b|\brithm\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'rhythm',
+        explanation: "Correct spelling is 'rhythm' (r-h-y-t-h-m)."
+      },
+      {
+        pattern: /\brestaraunt\b|\brestarant\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'restaurant',
+        explanation: "'Restaurant' is spelled r-e-s-t-a-u-r-a-n-t."
+      },
+      {
+        pattern: /\bexperience\b|\bexperiance\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'experience',
+        explanation: "'Experience' ends with 'ence', not 'ance'."
+      },
+      {
+        pattern: /\bknowlege\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'knowledge',
+        explanation: "'Knowledge' contains a 'd' (k-n-o-w-l-e-d-g-e)."
+      },
+      {
+        pattern: /\bconvenient\b|\bconveniant\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'convenient',
+        explanation: "'Convenient' ends with 'ient'."
+      },
+      {
+        pattern: /\bimmediatly\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'immediately',
+        explanation: "'Immediately' retains the 'e' before '-ly'."
+      },
+      {
+        pattern: /\bpeice\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'piece',
+        explanation: "Remember: 'a piece of pie' ('piece' starts with 'pie')."
+      },
+      {
+        pattern: /\bfreind\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'friend',
+        explanation: "'Friend' has 'i' before 'e' ('fri-end')."
+      },
+      {
+        pattern: /\bwierd\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'weird',
+        explanation: "'Weird' is an exception to the 'i before e' rule ('w-e-i-r-d')."
+      },
+      {
+        pattern: /\blanguge\b|\blangauge\b/gi,
+        type: 'Spelling Error',
+        severity: 'error',
+        replacement: 'language',
+        explanation: "Correct spelling is 'language' (l-a-n-g-u-a-g-e)."
+      },
+      {
+        pattern: /\bweather\s+(or\s+not|you\s+like|they|we|he|she|it|I)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: 'whether $1',
+        explanation: "'Weather' refers to the climate/rain. Use 'whether' for alternatives or conditions."
+      },
+      {
+        pattern: /\btheir\s+is\b|\btheir\s+are\b|\btheir\s+was\b|\btheir\s+were\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: 'there is / there are / there was / there were',
+        explanation: "'Their' is possessive. Use 'there' to indicate existence or location (e.g. 'There is a problem')."
+      },
+      {
+        pattern: /\bthere\s+(house|car|job|boss|opinion|skills|work|team|family|friend|effort|choice)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: 'their $1',
+        explanation: "Use possessive 'their' before nouns ('their $1'), not 'there'."
+      },
+      {
+        pattern: /\byour\s+(welcome|right|wrong|going|coming|invited|doing)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: "you're $1",
+        explanation: "Use the contraction \"you're\" (you are), not possessive 'your'."
+      },
+      {
+        pattern: /\bits\s+(a\s+|an\s+|important|necessary|hard|difficult|good|clear|true|obvious|time|possible)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: "it's $1",
+        explanation: "Use \"it's\" (contraction of 'it is') instead of possessive 'its'."
+      },
+      {
+        pattern: /\bloose\s+(a\s+job|money|weight|hope|control|my\s+mind|your\s+mind|the\s+match|the\s+game)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'error',
+        replacement: 'lose $1',
+        explanation: "'Loose' means not tight. Use 'lose' (verb: to misplace or suffer a loss)."
+      },
+      {
+        pattern: /\beffect\s+(our|my|your|the|a|his|her)\s+([a-zA-Z]+)\b/gi,
+        type: 'Homophone & Spelling',
+        severity: 'warning',
+        replacement: 'affect $1 $2',
+        explanation: "'Affect' is typically a verb (to influence), while 'effect' is usually a noun (a result)."
       },
 
       // -------------------------------------------------------------
@@ -1160,13 +1426,26 @@ class EnglishAnalyzer {
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
     const avgSentenceLength = sentences.length ? (wordCount / sentences.length) : 0;
     
+    // Separate spelling errors vs structural grammar errors for metric tracking
+    const spellingErrors = issues.filter(i => 
+      i.type.toLowerCase().includes('spell') || 
+      i.type.toLowerCase().includes('typo') || 
+      i.type.toLowerCase().includes('homophone')
+    );
+    const grammarIssuesOnly = issues.filter(i => 
+      !i.type.toLowerCase().includes('spell') && 
+      !i.type.toLowerCase().includes('typo') && 
+      !i.type.toLowerCase().includes('homophone')
+    );
+
     // Calculate scoring
-    let grammarScore = Math.max(20, 100 - (issues.length * 14));
+    let grammarScore = Math.max(20, Math.min(100, 100 - (grammarIssuesOnly.length * 15)));
+    let spellingScore = wordCount > 0 ? Math.max(10, Math.min(100, Math.round(((wordCount - spellingErrors.length) / wordCount) * 100))) : 100;
     let varietyScore = avgSentenceLength >= 8 && avgSentenceLength <= 24 ? 90 : 70;
     if (passiveCount > 3) varietyScore -= 10;
     let vocabScore = Math.min(100, 65 + (vocabSuggestions.length * 6) + (wordCount > 50 ? 15 : 5));
 
-    const overallScore = Math.round((grammarScore * 0.5) + (varietyScore * 0.25) + (vocabScore * 0.25));
+    const overallScore = Math.round((grammarScore * 0.4) + (spellingScore * 0.25) + (varietyScore * 0.18) + (vocabScore * 0.17));
 
     let gradeLabel = "Basic Intermediate (B1)";
     if (overallScore >= 90) gradeLabel = "Advanced Fluency (C1/C2)";
@@ -1195,16 +1474,31 @@ class EnglishAnalyzer {
       score: overallScore,
       gradeLabel,
       issues,
+      spellingIssues: spellingErrors,
       vocabSuggestions,
       metrics: {
         grammar: `${grammarScore}%`,
+        spelling: `${spellingScore}%`,
         variety: `${varietyScore}%`,
         vocab: `${vocabScore}%`
       },
       polishedText
     };
   }
+
+  /**
+   * Fast targeted spelling check
+   */
+  spellCheck(text) {
+    const analysis = this.analyze(text);
+    return {
+      spellingIssues: analysis.spellingIssues,
+      spellingAccuracy: analysis.metrics.spelling,
+      wordCount: analysis.wordCount
+    };
+  }
 }
 
 // Instantiate global analyzer
 window.analyzer = new EnglishAnalyzer();
+

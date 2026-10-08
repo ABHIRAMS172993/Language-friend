@@ -416,10 +416,16 @@
 
 .mini-metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   border-top: 1px solid var(--border-subtle);
   padding-top: 14px;
+}
+
+@media (max-width: 600px) {
+  .mini-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .metric-item {
@@ -450,16 +456,17 @@
 
 .fb-tab {
   flex: 1;
-  padding: 7px 10px;
+  padding: 7px 8px;
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   text-align: center;
+  white-space: nowrap;
 }
 
 .fb-tab.active {
@@ -488,6 +495,51 @@
   display: block;
 }
 
+/* Spelling Action Bar */
+.spelling-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.spelling-status-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.spelling-badge {
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.spelling-comparison {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spelling-arrow {
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
 /* Issues List */
 .issues-list {
   display: flex;
@@ -510,6 +562,15 @@
 
 .issue-item.warning {
   border-left-color: var(--accent-warning);
+}
+
+.issue-item.spelling {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.03);
+}
+
+.issue-item.spelling .issue-type {
+  color: #d97706;
 }
 
 .issue-item.style {

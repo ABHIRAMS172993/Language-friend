@@ -224,12 +224,13 @@
                   <span class="word-counter"><strong id="editor-word-count">0</strong> words | <strong id="editor-char-count">0</strong> chars</span>
                 </div>
                 <div class="toolbar-group">
+                  <button class="tool-btn" id="btn-spell-check-quick" title="Scan & Highlight Spelling">🔤 Spell Check</button>
                   <button class="tool-btn" id="btn-tone-formal" title="Formal Tone">👔 Professional</button>
                   <button class="tool-btn" id="btn-tone-casual" title="Casual Tone">☕ Casual</button>
                   <button class="tool-btn" id="btn-clear-editor" title="Clear Text">🗑️ Clear</button>
                 </div>
               </div>
-              <textarea id="writing-input" placeholder="Type or paste your English text here... (e.g., an email, essay, diary entry, or opinion). The analyzer will highlight errors, suggest corrections, and provide an upgraded C1 version!"></textarea>
+              <textarea id="writing-input" placeholder="Type or paste your English text here... (e.g., an email, essay, diary entry, or opinion). The analyzer will highlight spelling errors, grammar mistakes, suggest corrections, and provide an upgraded C1 version!"></textarea>
               
               <div class="editor-quick-prompts">
                 <span class="quick-label">Try quick topics:</span>
@@ -259,6 +260,10 @@
                     <strong id="metric-grammar">--</strong>
                   </div>
                   <div class="metric-item">
+                    <span>Spelling Accuracy</span>
+                    <strong id="metric-spelling">--</strong>
+                  </div>
+                  <div class="metric-item">
                     <span>Sentence Variety</span>
                     <strong id="metric-variety">--</strong>
                   </div>
@@ -271,7 +276,8 @@
 
               <!-- Corrections Tabs -->
               <div class="feedback-tabs">
-                <button class="fb-tab active" data-fbtab="corrections">Corrections & Rules (<span id="count-issues">0</span>)</button>
+                <button class="fb-tab active" data-fbtab="corrections">All Corrections (<span id="count-issues">0</span>)</button>
+                <button class="fb-tab" data-fbtab="spelling">Spelling Check (<span id="count-spelling">0</span>)</button>
                 <button class="fb-tab" data-fbtab="polished">Polished Version (C1)</button>
                 <button class="fb-tab" data-fbtab="vocab-suggestions">Vocab Upgrades</button>
               </div>
@@ -282,7 +288,24 @@
                   <div class="issues-list" id="issues-container">
                     <div class="empty-state">
                       <div class="empty-icon">📝</div>
-                      <p>Type your paragraph on the left and click <strong>"Analyze & Correct"</strong> to inspect grammar, sentence structure, and awkward phrasing.</p>
+                      <p>Type your paragraph on the left and click <strong>"Analyze & Correct"</strong> to inspect grammar, sentence structure, and spelling.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dedicated Spelling Check pane -->
+                <div class="fb-pane" id="fb-pane-spelling">
+                  <div class="spelling-action-bar" id="spelling-action-bar" style="display:none;">
+                    <div class="spelling-status-text">
+                      <span class="spelling-badge">🔤 Spelling Review</span>
+                      <span id="spelling-summary-text">0 spelling mistakes found</span>
+                    </div>
+                    <button class="btn btn-sm btn-primary" id="btn-fix-all-spelling">⚡ Fix All Spelling</button>
+                  </div>
+                  <div class="issues-list" id="spelling-container">
+                    <div class="empty-state">
+                      <div class="empty-icon">🔤</div>
+                      <p>Click <strong>"Analyze & Correct"</strong> or <strong>"Spell Check"</strong> to inspect word spellings, double consonants, and typos.</p>
                     </div>
                   </div>
                 </div>

@@ -175,16 +175,27 @@ class AIService {
     polishedText = polishedText.replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
 
     // Compute dynamic scores
-    const issueCount = combinedIssues.length;
-    let grammarScore = Math.max(10, Math.min(100, 100 - (issueCount * 14)));
+    const spellingIssues = combinedIssues.filter(i => 
+      i.type.toLowerCase().includes('spell') || 
+      i.type.toLowerCase().includes('typo') || 
+      i.type.toLowerCase().includes('homophone')
+    );
+    const grammarOnlyIssues = combinedIssues.filter(i => 
+      !i.type.toLowerCase().includes('spell') && 
+      !i.type.toLowerCase().includes('typo') && 
+      !i.type.toLowerCase().includes('homophone')
+    );
+
+    let grammarScore = Math.max(10, Math.min(100, 100 - (grammarOnlyIssues.length * 15)));
+    let spellingScore = wordCount > 0 ? Math.max(10, Math.min(100, Math.round(((wordCount - spellingIssues.length) / wordCount) * 100))) : 100;
     let varietyScore = localResult.metrics?.variety ? parseInt(localResult.metrics.variety) : 75;
     let vocabScore = localResult.metrics?.vocab ? parseInt(localResult.metrics.vocab) : 70;
 
-    let overallScore = Math.round((grammarScore * 0.5) + (varietyScore * 0.25) + (vocabScore * 0.25));
+    let overallScore = Math.round((grammarScore * 0.4) + (spellingScore * 0.25) + (varietyScore * 0.18) + (vocabScore * 0.17));
 
     let gradeLabel = "Basic Intermediate (B1)";
-    if (issueCount === 0 && overallScore >= 88) gradeLabel = "Advanced Fluency (C1/C2)";
-    else if (issueCount <= 2 && overallScore >= 75) gradeLabel = "Strong Upper-Intermediate (B2)";
+    if (combinedIssues.length === 0 && overallScore >= 88) gradeLabel = "Advanced Fluency (C1/C2)";
+    else if (combinedIssues.length <= 2 && overallScore >= 75) gradeLabel = "Strong Upper-Intermediate (B2)";
     else if (overallScore >= 55) gradeLabel = "Developing Intermediate (B1)";
     else gradeLabel = "Needs Revision (A2/B1)";
 
@@ -194,9 +205,11 @@ class AIService {
       score: overallScore,
       gradeLabel,
       issues: combinedIssues,
+      spellingIssues,
       vocabSuggestions: localResult.vocabSuggestions || [],
       metrics: {
         grammar: `${grammarScore}%`,
+        spelling: `${spellingScore}%`,
         variety: `${varietyScore}%`,
         vocab: `${vocabScore}%`
       },
@@ -225,7 +238,7 @@ Return a JSON object with:
   "vocabSuggestions": [
     { "original": "basic word", "suggested": "advanced C1 alternative" }
   ],
-  "metrics": { "grammar": "85%", "variety": "80%", "vocab": "75%" },
+  "metrics": { "grammar": "85%", "spelling": "95%", "variety": "80%", "vocab": "75%" },
   "polishedText": "Flawlessly rewritten elegant C1 level version of the text"
 }
 Output ONLY valid JSON.`
