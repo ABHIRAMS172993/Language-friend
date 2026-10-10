@@ -30,15 +30,18 @@ Fluently is a modern web application designed for **intermediate English learner
 - **Full Article Audio Narration**: Listen to native-speaker audio playback.
 - **Comprehension Quizzes**: Instant checks with detailed explanations.
 
-### 💬 4. Conversational Roleplay Partner
+### 💬 4. Conversational Roleplay Partner & Dynamic AI
+- **Dynamic AI Response Branching**: Powered by Gemini LLM + intelligent local heuristic personas for infinite, context-aware back-and-forth dialogue without abrupt script limits.
+- **In-Line C1 Starter Phrase Pills ("What could I say next?")**: 3 clickable C1-level suggestions generated for each turn to help intermediate learners formulate advanced, natural responses.
+- **Turn-by-Turn Speech with Regional Accents**: Automatic vocalization of bot messages using regional TTS accents (🇬🇧 British English for London Cafe, 🇺🇸 US Corporate for Job Interview & Customs).
 - **Realistic Interactive Scenarios**:
-  - 💼 *Job Interview (Senior Project Role)*
+  - 💼 *Job Interview (Senior Project Lead Role)*
   - ☕ *Ordering at a London Coffee Shop*
   - 🏨 *Hotel Check-In & Requesting an Executive Upgrade*
   - 🤝 *Workplace Collaboration & Polite Disagreement*
   - ✈️ *Airport Immigration & Customs*
-- **Speech & Text Input**: Respond by typing or speaking.
-- **Real-Time Sentence Fixes**: Inspects every message you send before continuing the conversation.
+- **Speech & Text Input**: Respond by typing or hands-free voice transcription.
+- **Real-Time Sentence Fixes**: Inspects and corrects every message you send before continuing.
 
 ### 📚 5. B2 → C1 Power Vocabulary Booster
 - Searchable matrix of high-impact vocabulary upgrades with phonetic IPA spelling and audio pronunciations.

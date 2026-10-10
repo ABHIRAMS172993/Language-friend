@@ -539,6 +539,7 @@
                 <option value="office_debate">🤝 Workplace Collaboration & Polite Disagreement</option>
                 <option value="airport">✈️ Airport Immigration & Customs</option>
               </select>
+              <button class="btn btn-outline btn-sm" id="btn-toggle-auto-speak" title="Toggle automatic speech playback for bot responses">🔊 Voice: ON</button>
               <button class="btn btn-outline btn-sm" id="btn-restart-chat">🔄 Restart Dialogue</button>
             </div>
           </div>
@@ -547,7 +548,10 @@
             <div class="chat-scenario-banner">
               <div class="scenario-icon" id="chat-scenario-icon">💼</div>
               <div class="scenario-details">
-                <h4 id="chat-scenario-title">Job Interview for a Project Role</h4>
+                <div class="scenario-title-row">
+                  <h4 id="chat-scenario-title">Job Interview for a Project Role</h4>
+                  <span class="scenario-accent-badge" id="chat-accent-badge">🇺🇸 US Professional</span>
+                </div>
                 <p id="chat-scenario-desc">You are being interviewed by Alex, a hiring manager. Answer questions clearly and professionally.</p>
               </div>
             </div>
@@ -557,10 +561,24 @@
               <!-- Dynamically populated -->
             </div>
 
+            <!-- In-line Suggestion Pills ("What could I say next?") -->
+            <div class="chat-suggestions-wrapper" id="chat-suggestions-wrapper">
+              <div class="chat-suggestions-header">
+                <div class="suggestions-header-left">
+                  <span class="suggestions-icon">💡</span>
+                  <span class="suggestions-title"><strong>What could I say next?</strong> <small>(C1 High-Impact Starter Phrases)</small></span>
+                </div>
+                <button class="btn-refresh-suggestions" id="btn-refresh-suggestions" title="Get new suggestions">🔄 Shuffle Hints</button>
+              </div>
+              <div class="chat-suggestions-pills" id="chat-suggestions-pills">
+                <!-- Dynamically populated pills -->
+              </div>
+            </div>
+
             <!-- Chat Input with Speech & Grammar Pre-Check -->
             <div class="chat-input-bar">
               <div class="chat-input-wrapper">
-                <textarea id="chat-input-text" rows="2" placeholder="Type your response in English (e.g., 'I have 3 years of experience managing client projects...')..."></textarea>
+                <textarea id="chat-input-text" rows="2" placeholder="Type your response in English (or click any C1 hint pill above)..."></textarea>
                 <button class="chat-mic-btn" id="btn-chat-mic" title="Speak your response">🎙️</button>
               </div>
               <button class="btn btn-primary btn-chat-send" id="btn-send-chat">
