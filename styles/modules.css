@@ -1765,6 +1765,8 @@
   border-bottom: 1px solid var(--border-subtle);
   padding: 10px 24px 0 24px;
   background: var(--bg-secondary);
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .history-tab-btn {

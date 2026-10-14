@@ -14,8 +14,11 @@
 <body>
   <!-- App Container -->
   <div class="app-layout">
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="app-sidebar">
       <div class="brand-logo">
         <div class="logo-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -31,6 +34,7 @@
           <h2>Fluently<span>.ai</span></h2>
           <p>Intermediate Coach</p>
         </div>
+        <button class="sidebar-close-btn" id="btn-sidebar-close" aria-label="Close sidebar" title="Close menu">✕</button>
       </div>
 
       <nav class="nav-menu">
@@ -81,15 +85,24 @@
     <main class="main-viewport">
       <!-- Header Bar -->
       <header class="top-header">
-        <div class="header-search">
-          <span class="user-level-tag">Level: <strong>B1/B2 Intermediate</strong></span>
+        <div class="header-left">
+          <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="header-search">
+            <span class="user-level-tag">Level: <strong>B1/B2 Intermediate</strong></span>
+          </div>
         </div>
         <div class="header-actions">
-          <div class="quick-stat">
+          <div class="quick-stat stat-words-stat">
             <span class="stat-label">Words Checked:</span>
             <span class="stat-num" id="total-words-stat">1,480</span>
           </div>
-          <div class="quick-stat">
+          <div class="quick-stat stat-speaking-stat">
             <span class="stat-label">Speaking Accuracy:</span>
             <span class="stat-num highlight" id="avg-speaking-stat">91%</span>
           </div>
@@ -389,14 +402,14 @@
                 </div>
 
                 <div class="mic-controls">
-                  <button class="mic-btn" id="btn-toggle-mic">
+                  <button class="mic-btn" id="btn-toggle-mic" title="Click to start speaking" aria-label="Toggle microphone">
                     <svg class="mic-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                       <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                       <line x1="12" x2="12" y1="19" y2="22"/>
                     </svg>
-                    <span id="mic-status-label">Click to Start Speaking</span>
                   </button>
+                  <span id="mic-status-label">Click to Start Speaking</span>
                 </div>
 
                 <!-- Real-time transcript feedback -->
