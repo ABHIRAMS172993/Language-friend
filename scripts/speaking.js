@@ -388,6 +388,10 @@ class SpeakingStudio {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
     utterance.rate = parseFloat(localStorage.getItem('fluently_voice_rate') || '0.95');
+    if (window.app && typeof window.app.getPreferredVoice === 'function') {
+      const voice = window.app.getPreferredVoice();
+      if (voice) utterance.voice = voice;
+    }
     this.synth.speak(utterance);
     app.showToast('Playing reference audio...', 'success');
   }

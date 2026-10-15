@@ -141,10 +141,20 @@ class FluentlyApp {
     const voiceRateLabel = document.getElementById('voice-rate-label');
     const saveBtn = document.getElementById('btn-save-settings');
 
+    const savedVoiceRate = localStorage.getItem('fluently_voice_rate') || '0.95';
+    voiceRateRange.value = savedVoiceRate;
+    voiceRateLabel.innerText = `${savedVoiceRate}x`;
+
     // Populate initial values
     geminiKeyInput.value = window.aiService.apiKey || '';
     engineSelect.value = window.aiService.engine || 'smart-local';
     geminiGroup.style.display = engineSelect.value === 'gemini' ? 'flex' : 'none';
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        this.populateVoiceSelect();
+      };
+    }
 
     openBtn.addEventListener('click', () => {
       modal.style.display = 'flex';
@@ -172,6 +182,10 @@ class FluentlyApp {
       window.aiService.setEngine(engineSelect.value);
       window.aiService.setApiKey(geminiKeyInput.value);
       localStorage.setItem('fluently_voice_rate', voiceRateRange.value);
+      const voiceSelect = document.getElementById('target-accent-select');
+      if (voiceSelect && voiceSelect.value) {
+        localStorage.setItem('fluently_target_accent', voiceSelect.value);
+      }
       modal.style.display = 'none';
       this.showToast('Settings successfully saved!', 'success');
     });
@@ -246,14 +260,24 @@ class FluentlyApp {
 
   populateVoiceSelect() {
     const voiceSelect = document.getElementById('target-accent-select');
-    if (!window.speechSynthesis) return;
+    if (!voiceSelect || !window.speechSynthesis) return;
 
     const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+    const savedAccent = localStorage.getItem('fluently_target_accent') || '';
+
     if (voices.length > 0) {
-      voiceSelect.innerHTML = voices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+      voiceSelect.innerHTML = voices.map(v => `<option value="${v.name}" ${v.name === savedAccent ? 'selected' : ''}>${v.name} (${v.lang})</option>`).join('');
     } else {
       voiceSelect.innerHTML = `<option value="default">Default System English Voice</option>`;
     }
+  }
+
+  getPreferredVoice() {
+    if (!window.speechSynthesis) return null;
+    const savedAccent = localStorage.getItem('fluently_target_accent');
+    if (!savedAccent) return null;
+    const voices = window.speechSynthesis.getVoices();
+    return voices.find(v => v.name === savedAccent) || null;
   }
 
   initVocabMatrix() {
@@ -296,6 +320,11 @@ class FluentlyApp {
     if (!window.speechSynthesis) return;
     const u = new SpeechSynthesisUtterance(word);
     u.lang = 'en-US';
+    u.rate = parseFloat(localStorage.getItem('fluently_voice_rate') || '0.95');
+    const preferredVoice = this.getPreferredVoice();
+    if (preferredVoice) {
+      u.voice = preferredVoice;
+    }
     window.speechSynthesis.speak(u);
   }
 

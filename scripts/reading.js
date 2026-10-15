@@ -264,6 +264,10 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
     const utterance = new SpeechSynthesisUtterance(this.currentArticle.content);
     utterance.lang = 'en-US';
     utterance.rate = parseFloat(localStorage.getItem('fluently_voice_rate') || '0.95');
+    if (window.app && typeof window.app.getPreferredVoice === 'function') {
+      const voice = window.app.getPreferredVoice();
+      if (voice) utterance.voice = voice;
+    }
     this.synth.speak(utterance);
     app.showToast('Reading article aloud... Click again to stop.', 'success');
   }
