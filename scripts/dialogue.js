@@ -421,6 +421,9 @@ class DialoguePartner {
     if (window.app) {
       window.app.incrementStats(text.split(/\s+/).filter(Boolean).length);
     }
+    if (window.goalsManager) {
+      window.goalsManager.logActivity('dialogue', 30, 'Roleplay Dialogue Turn');
+    }
 
     // Save to Database
     if (window.fluentlyDB) {

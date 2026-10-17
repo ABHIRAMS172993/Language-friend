@@ -342,6 +342,9 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
         Score: ${score} / ${quiz.length} (${percentage}%) - ${percentage === 100 ? '🎉 Excellent comprehension!' : '💡 Review the highlighted correct options.'}
       </div>
     `;
+    if (window.goalsManager) {
+      window.goalsManager.logActivity('reading', 30, 'Reading Quiz Completed');
+    }
     app.showToast(`Quiz completed! You scored ${score}/${quiz.length}`, 'success');
   }
 }

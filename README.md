@@ -46,6 +46,13 @@ Fluently is a modern web application designed for **intermediate English learner
 ### 📚 5. B2 → C1 Power Vocabulary Booster
 - Searchable matrix of high-impact vocabulary upgrades with phonetic IPA spelling and audio pronunciations.
 
+### 🔥 6. Daily Goals, Streak Tracking & XP Engine
+- **Consecutive Day Streaks**: Tracks daily learning consistency with dynamic day counters and milestone tracking.
+- **Multi-Track Practice Checklist**: Seamlessly logs completions across Writing Lab, Speaking Studio, Reading Lounge, and Roleplay Partner.
+- **Dynamic XP Scoring**: Earn XP points for every practice session, quiz, drill, and dialogue turn.
+- **7-Day History Week Strip**: Visual weekly history indicators for daily targets met.
+- **Canvas Confetti Celebrations**: Lightweight confetti physics celebrate streak milestones and goal achievements.
+
 ---
 
 ## 🚀 Getting Started
@@ -75,10 +82,12 @@ Language-friend/
 ├── README.md               # Documentation & setup guide
 ├── styles/
 │   ├── main.css            # Global styling, tokens, dark/light theme, dashboard
-│   └── modules.css         # Component styling for Writing, Speaking, Reading, Chat
+│   └── modules.css         # Component styling for Writing, Speaking, Reading, Chat, Goals
 └── scripts/
+    ├── database.js         # Client-side IndexedDB persistence layer
     ├── analyzer.js         # Offline rule-based NLP grammar & ESL heuristic engine
     ├── ai-service.js       # Cloud AI connector (Gemini) + offline fallback
+    ├── goals.js            # Daily goals, streak tracking, XP engine & celebrations
     ├── writing.js          # Writing Lab logic & 1-click correction tools
     ├── speaking.js         # Speech Recognition, diff comparison & audio visualizer
     ├── reading.js          # Reading Lounge, word lookup popover & quizzes

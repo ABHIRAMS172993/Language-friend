@@ -67,7 +67,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="streak-widget">
+        <div class="streak-widget" id="sidebar-streak-widget" onclick="goalsManager.openGoalsModal()" title="View Daily Practice Goals & Streak">
           <div class="streak-fire">🔥</div>
           <div>
             <div class="streak-count" id="streak-days">4 Day Streak</div>
@@ -147,6 +147,80 @@
                   <div class="skill-info"><span>Reading Comprehension</span><span id="meter-val-reading">90%</span></div>
                   <div class="meter-bar"><div class="meter-fill" id="meter-bar-reading" style="width: 90%;"></div></div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Goals & Streak Tracking Interactive Panel -->
+          <div class="dashboard-goals-panel">
+            <div class="goals-panel-header">
+              <div class="goals-panel-title">
+                <span style="font-size: 1.5rem;">🔥</span>
+                <div>
+                  <h3>Daily Fluency Goals & Streak</h3>
+                  <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">
+                    Complete daily activities across Writing, Speaking, Reading, and Roleplay to maintain your streak and level up to C1!
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="goals-badge-pill" id="daily-streak-badge">4 Days</span>
+                <span class="goals-xp-pill" id="daily-total-xp">420 XP</span>
+                <button class="btn btn-sm btn-outline" onclick="goalsManager.openGoalsModal()">Details & History</button>
+              </div>
+            </div>
+
+            <!-- Goal Progress Bar -->
+            <div class="goals-progress-overview">
+              <div class="goals-progress-header">
+                <span>Today's Practice Target</span>
+                <span style="font-weight:700; color:var(--text-primary);" id="daily-goal-pct">0%</span>
+              </div>
+              <div class="goals-progress-bar-bg">
+                <div class="goals-progress-bar-fill" id="daily-goal-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Interactive Task Grid -->
+            <div class="goals-tasks-grid">
+              <div class="goal-task-item" id="goal-row-writing" onclick="app.switchTab('writing')">
+                <input type="checkbox" id="goal-check-writing" onclick="event.stopPropagation(); goalsManager.logActivity('writing', 30, 'Writing Lab Session')">
+                <div class="goal-task-info">
+                  <span class="goal-task-title">✍️ Writing Lab</span>
+                  <span class="goal-task-sub">Analyze an essay or note (+30 XP)</span>
+                </div>
+              </div>
+
+              <div class="goal-task-item" id="goal-row-speaking" onclick="app.switchTab('speaking')">
+                <input type="checkbox" id="goal-check-speaking" onclick="event.stopPropagation(); goalsManager.logActivity('speaking', 30, 'Speaking Studio Drill')">
+                <div class="goal-task-info">
+                  <span class="goal-task-title">🎙️ Speaking Studio</span>
+                  <span class="goal-task-sub">Record a sentence drill (+30 XP)</span>
+                </div>
+              </div>
+
+              <div class="goal-task-item" id="goal-row-reading" onclick="app.switchTab('reading')">
+                <input type="checkbox" id="goal-check-reading" onclick="event.stopPropagation(); goalsManager.logActivity('reading', 30, 'Reading Quiz Completed')">
+                <div class="goal-task-info">
+                  <span class="goal-task-title">📖 Reading Lounge</span>
+                  <span class="goal-task-sub">Complete a comprehension quiz (+30 XP)</span>
+                </div>
+              </div>
+
+              <div class="goal-task-item" id="goal-row-dialogue" onclick="app.switchTab('dialogue')">
+                <input type="checkbox" id="goal-check-dialogue" onclick="event.stopPropagation(); goalsManager.logActivity('dialogue', 30, 'Roleplay Dialogue')">
+                <div class="goal-task-info">
+                  <span class="goal-task-title">💬 Roleplay Partner</span>
+                  <span class="goal-task-sub">Exchange 2+ conversational turns (+30 XP)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7-Day History Week Bar -->
+            <div>
+              <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;">Last 7 Days Activity</div>
+              <div class="week-history-strip" id="weekly-streak-days">
+                <!-- Populated via goals.js -->
               </div>
             </div>
           </div>
@@ -755,6 +829,73 @@
     <div class="popover-example" id="popover-example">"Example sentence."</div>
   </div>
 
+  <!-- Goals & Streak Details Modal -->
+  <div class="modal-backdrop" id="goals-modal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>🔥 Daily Fluency Goals & Streak</h3>
+          <p class="modal-subtitle" style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">Deliberate practice towards C1 Fluency</p>
+        </div>
+        <button class="modal-close" onclick="goalsManager.closeGoalsModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-secondary); padding:14px 18px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">Current Streak</div>
+            <div style="font-size:1.4rem; font-weight:700; color:var(--accent-gold); margin-top:2px;" id="modal-streak-count">🔥 4 Days Active</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">Intermediate XP</div>
+            <div style="font-size:1.4rem; font-weight:700; color:#93c5fd; margin-top:2px;" id="modal-xp-count">★ 420 XP</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight:600; font-size:0.88rem; margin-bottom:8px; color:var(--text-primary);">Today's Practice Targets</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div class="goal-task-item" onclick="app.switchTab('writing'); goalsManager.closeGoalsModal();">
+              <span style="font-size:1.2rem;">✍️</span>
+              <div class="goal-task-info">
+                <span class="goal-task-title">Writing Lab Session</span>
+                <span class="goal-task-sub">Analyze an essay or practice paragraph (+30 XP)</span>
+              </div>
+            </div>
+            <div class="goal-task-item" onclick="app.switchTab('speaking'); goalsManager.closeGoalsModal();">
+              <span style="font-size:1.2rem;">🎙️</span>
+              <div class="goal-task-info">
+                <span class="goal-task-title">Speaking Studio Drill</span>
+                <span class="goal-task-sub">Record pronunciation drills with real-time feedback (+30 XP)</span>
+              </div>
+            </div>
+            <div class="goal-task-item" onclick="app.switchTab('reading'); goalsManager.closeGoalsModal();">
+              <span style="font-size:1.2rem;">📖</span>
+              <div class="goal-task-info">
+                <span class="goal-task-title">Reading Lounge Comprehension</span>
+                <span class="goal-task-sub">Read an article and ace the quiz (+30 XP)</span>
+              </div>
+            </div>
+            <div class="goal-task-item" onclick="app.switchTab('dialogue'); goalsManager.closeGoalsModal();">
+              <span style="font-size:1.2rem;">💬</span>
+              <div class="goal-task-info">
+                <span class="goal-task-title">Roleplay Partner Chat</span>
+                <span class="goal-task-sub">Complete conversational turns in realistic scenarios (+30 XP)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(234, 179, 8, 0.08); border:1px solid rgba(234, 179, 8, 0.25); border-radius:var(--radius-sm); padding:12px 14px; font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
+          💡 <strong>Tip for Intermediate Fluency:</strong> Completing at least 2 distinct practice tracks every day extends your streak and triggers bonus rewards!
+        </div>
+      </div>
+      <div class="modal-footer" style="padding:12px 20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+        <button class="btn btn-secondary btn-sm" onclick="goalsManager.triggerConfetti()">🎉 Celebrate</button>
+        <button class="btn btn-primary btn-sm" onclick="goalsManager.closeGoalsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Notification Toast -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -762,6 +903,7 @@
   <script src="scripts/database.js?v=4"></script>
   <script src="scripts/analyzer.js?v=4"></script>
   <script src="scripts/ai-service.js?v=4"></script>
+  <script src="scripts/goals.js?v=4"></script>
   <script src="scripts/writing.js?v=4"></script>
   <script src="scripts/speaking.js?v=4"></script>
   <script src="scripts/reading.js?v=4"></script>

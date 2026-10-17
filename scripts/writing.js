@@ -328,6 +328,9 @@ class WritingCoach {
 
       // Track total words
       app.incrementStats(result.wordCount || 0);
+      if (window.goalsManager) {
+        window.goalsManager.logActivity('writing', 30, 'Writing Lab Analysis');
+      }
       app.showToast(`Analysis complete! Detected ${issueList.length} improvements (${spellingIssues.length} spelling).`, 'success');
     } catch (err) {
       console.error('Analysis error:', err);

@@ -78,6 +78,9 @@ class FluentlyApp {
     this.initSettingsModal();
     this.initVocabMatrix();
     this.updateStatsUI();
+    if (window.goalsManager) {
+      window.goalsManager.renderGoalsUI();
+    }
 
     // Initialize module controllers once DOM is loaded
     window.writingCoach = new WritingCoach();
@@ -236,6 +239,11 @@ class FluentlyApp {
       this.speakingScores = [85];
       localStorage.setItem('fluently_total_words', '0');
       localStorage.setItem('fluently_speaking_scores', JSON.stringify([85]));
+      localStorage.removeItem('fluently_goals_data_v1');
+      if (window.goalsManager) {
+        window.goalsManager.data = window.goalsManager.loadData();
+        window.goalsManager.renderGoalsUI();
+      }
       this.updateStatsUI();
       modal.style.display = 'none';
       this.showToast('Daily stats reset.', 'info');

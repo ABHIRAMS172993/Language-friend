@@ -313,6 +313,9 @@ class SpeakingStudio {
 
     app.incrementStats(wordCount);
     app.recordSpeakingScore(analysis.score);
+    if (window.goalsManager) {
+      window.goalsManager.logActivity('speaking', 30, 'Impromptu Speaking Speech');
+    }
     app.showToast(`Impromptu evaluation complete! Pacing: ${wpm} WPM`, 'success');
   }
 
@@ -380,6 +383,9 @@ class SpeakingStudio {
 
     // Update global app stats
     app.recordSpeakingScore(accuracy);
+    if (window.goalsManager) {
+      window.goalsManager.logActivity('speaking', 30, 'Sentence Drill Practice');
+    }
   }
 
   speakText(text) {

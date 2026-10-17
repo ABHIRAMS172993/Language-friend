@@ -2053,3 +2053,210 @@
   color: #fff;
 }
 
+/* =========================================================
+   7. DAILY GOALS & STREAK TRACKER STYLES
+   ========================================================= */
+.streak-widget {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.streak-widget:hover {
+  border-color: var(--accent-gold);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.dashboard-goals-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.goals-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.goals-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.goals-panel-title h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.goals-badge-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.goals-xp-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(67, 97, 238, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(67, 97, 238, 0.35);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.goals-progress-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goals-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.goals-progress-bar-bg {
+  width: 100%;
+  height: 9px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.goals-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-gold));
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease-out;
+}
+
+.goals-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.goal-task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.goal-task-item:hover {
+  border-color: var(--border-active);
+  background: var(--bg-card-hover);
+}
+
+.goal-task-item.completed {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.goal-task-item input[type="checkbox"] {
+  accent-color: var(--accent-success);
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.goal-task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-task-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.goal-task-item.completed .goal-task-title {
+  color: var(--accent-success);
+}
+
+.goal-task-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* 7-Day History Week Bar */
+.week-history-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 4px;
+}
+
+.week-day-pill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.week-day-pill.completed {
+  border-color: rgba(234, 179, 8, 0.5);
+  background: rgba(234, 179, 8, 0.12);
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.week-day-pill.today {
+  box-shadow: 0 0 0 1.5px var(--accent-primary);
+}
+
+.day-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.day-icon {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+
