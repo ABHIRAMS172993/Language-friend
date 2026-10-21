@@ -173,6 +173,27 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
       }
     });
 
+    // Popover bookmark to flashcards
+    const bookmarkBtn = document.getElementById('popover-bookmark-btn');
+    if (bookmarkBtn) {
+      bookmarkBtn.addEventListener('click', () => {
+        const word = document.getElementById('popover-word').innerText;
+        const info = this.dictionary[word.toLowerCase().trim()];
+        if (word && window.vocabStudio) {
+          window.vocabStudio.saveWord({
+            word,
+            basic: 'Vocabulary from Reading',
+            def: info?.def || document.getElementById('popover-def').innerText,
+            example: info?.ex || document.getElementById('popover-example').innerText.replace(/^"|"$/g, ''),
+            ipa: info?.ipa || document.getElementById('popover-phonetic').innerText,
+            category: 'Reading Lounge'
+          });
+          bookmarkBtn.innerText = '★ Saved';
+          bookmarkBtn.classList.add('saved');
+        }
+      });
+    }
+
     // Global click to dismiss popover
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.vocab-word') && !e.target.closest('#word-definition-popover')) {
@@ -246,6 +267,13 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
     document.getElementById('popover-phonetic').innerText = info.ipa;
     document.getElementById('popover-def').innerText = info.def;
     document.getElementById('popover-example').innerText = `"${info.ex}"`;
+
+    const bookmarkBtn = document.getElementById('popover-bookmark-btn');
+    if (bookmarkBtn) {
+      const isSaved = window.vocabStudio ? window.vocabStudio.isWordSaved(cleanWord) : false;
+      bookmarkBtn.innerText = isSaved ? '★ Saved' : '⭐ Bookmark';
+      bookmarkBtn.classList.toggle('saved', isSaved);
+    }
 
     const rect = event.target.getBoundingClientRect();
     this.popover.style.display = 'block';

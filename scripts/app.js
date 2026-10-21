@@ -87,6 +87,7 @@ class FluentlyApp {
     window.speakingStudio = new SpeakingStudio();
     window.readingLounge = new ReadingLounge();
     window.dialoguePartner = new DialoguePartner();
+    window.vocabStudio = new FlashcardStudio();
   }
 
   initNavigation() {
@@ -289,39 +290,11 @@ class FluentlyApp {
   }
 
   initVocabMatrix() {
-    const container = document.getElementById('vocab-cards-grid');
-    const searchInput = document.getElementById('vocab-search-input');
-
-    const render = (query = '') => {
-      const filtered = this.vocabData.filter(item =>
-        item.basic.toLowerCase().includes(query.toLowerCase()) ||
-        item.advanced.toLowerCase().includes(query.toLowerCase()) ||
-        item.def.toLowerCase().includes(query.toLowerCase())
-      );
-
-      let html = '';
-      filtered.forEach(item => {
-        html += `
-          <div class="vocab-card">
-            <div class="vocab-card-header">
-              <span class="basic-word-tag">Replace: ${item.basic}</span>
-              <button class="tool-btn" onclick="app.pronounce('${item.advanced.split(' / ')[0]}')">🔊</button>
-            </div>
-            <div class="adv-term">${item.advanced}</div>
-            <div style="font-size:0.78rem; color:var(--accent-secondary); font-family:monospace;">${item.ipa}</div>
-            <p class="vocab-definition">${item.def}</p>
-            <div class="vocab-example-quote">"${item.example}"</div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    };
-
-    render();
-
-    searchInput.addEventListener('input', (e) => {
-      render(e.target.value);
-    });
+    // If FlashcardStudio is active, it manages the matrix, flashcards, and quizzes
+    if (window.vocabStudio) {
+      window.vocabStudio.renderMatrix();
+      return;
+    }
   }
 
   pronounce(word) {

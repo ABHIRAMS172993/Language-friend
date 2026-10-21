@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=6">
-  <link rel="stylesheet" href="styles/modules.css?v=6">
+  <link rel="stylesheet" href="styles/main.css?v=7">
+  <link rel="stylesheet" href="styles/modules.css?v=7">
 </head>
 <body>
   <!-- App Container -->
@@ -62,7 +62,8 @@
         </button>
         <button class="nav-item" data-tab="vocabulary" id="nav-vocabulary">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
-          <span>Power Vocab (B2→C1)</span>
+          <span>Vocab & Flashcards</span>
+          <span class="badge live" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff; font-weight:700;">SRS</span>
         </button>
       </nav>
 
@@ -125,6 +126,9 @@
                 </button>
                 <button class="btn btn-secondary" onclick="app.switchTab('speaking')">
                   🎙️ Practice Speaking
+                </button>
+                <button class="btn btn-secondary" onclick="app.switchTab('vocabulary')">
+                  🗂️ SRS Flashcards
                 </button>
               </div>
             </div>
@@ -676,20 +680,175 @@
           </div>
         </section>
 
-        <!-- TAB 6: VOCABULARY ACCELERATOR -->
+        <!-- TAB 6: VOCABULARY & FLASHCARDS SRS STUDIO -->
         <section class="tab-pane" id="pane-vocabulary">
-          <div class="module-header">
+          <div class="module-header vocab-main-header">
             <div>
-              <h2>B2 &rarr; C1 Power Vocabulary Booster</h2>
-              <p>Replace basic, repetitive words (e.g. "very good", "bad", "important") with natural, advanced alternatives.</p>
+              <div class="vocab-title-row">
+                <h2>Vocab & Flashcards SRS Studio</h2>
+                <span class="vocab-srs-chip">🧠 Active Recall &amp; Spaced Repetition</span>
+              </div>
+              <p>Master sophisticated C1 power words, idiomatic collocations, and eradicate stubborn ESL traps through deliberate 3D flashcard practice.</p>
             </div>
-            <div class="module-actions">
-              <input type="text" id="vocab-search-input" class="search-input" placeholder="Search a word (e.g. 'difficult', 'happy')...">
+            <div class="vocab-mode-switcher">
+              <button class="vocab-mode-btn active" data-mode="flashcards">
+                🗂️ Flashcard Trainer
+              </button>
+              <button class="vocab-mode-btn" data-mode="matrix">
+                📚 Explorer Matrix
+              </button>
+              <button class="vocab-mode-btn" data-mode="quiz">
+                🎯 Collocation Quiz
+              </button>
             </div>
           </div>
 
-          <div class="vocab-matrix" id="vocab-cards-grid">
-            <!-- Populated via app.js -->
+          <!-- SUBVIEW 1: INTERACTIVE 3D FLASHCARDS -->
+          <div class="vocab-subview active" id="vocab-view-flashcards">
+            <!-- Deck Selector & Actions Bar -->
+            <div class="deck-selector-bar">
+              <div class="deck-chips-scroll">
+                <button class="deck-select-chip active" data-deck="c1_upgrades">
+                  🌟 B2 &rarr; C1 Upgrades
+                </button>
+                <button class="deck-select-chip" data-deck="collocations">
+                  🤝 Collocations &amp; Phrasals
+                </button>
+                <button class="deck-select-chip" data-deck="esl_traps">
+                  ⚠️ ESL Trap Buster
+                </button>
+                <button class="deck-select-chip" data-deck="saved">
+                  ⭐ My Saved Words <span class="deck-badge" id="saved-deck-count-badge">3</span>
+                </button>
+              </div>
+              <div class="deck-actions-group">
+                <button class="btn btn-secondary btn-sm" onclick="vocabStudio.shuffleDeck()" title="Randomize card order">
+                  🔀 Shuffle
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="vocabStudio.resetDeckMastery()" title="Reset mastery scores for this deck">
+                  ↺ Reset
+                </button>
+                <button class="btn btn-primary btn-sm" id="btn-open-add-word">
+                  ➕ Add Word
+                </button>
+              </div>
+            </div>
+
+            <!-- Deck Mastery Bar & Progress -->
+            <div class="deck-progress-wrapper">
+              <div class="deck-progress-info">
+                <span class="card-counter" id="card-index-counter">Card 1 of 20</span>
+                <span class="mastery-counter" id="deck-mastery-text">Mastery: 0 / 20 (0%)</span>
+              </div>
+              <div class="deck-mastery-track">
+                <div class="deck-mastery-fill" id="deck-mastery-bar-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Empty Deck Notice -->
+            <div class="deck-empty-notice" id="deck-empty-notice" style="display:none;">
+              <div class="empty-icon">📭</div>
+              <h3>No Words in this Deck Yet</h3>
+              <p>Bookmark words while reading articles in the Reading Lounge, explore the Vocab Matrix, or click "Add Word" to build your custom deck.</p>
+              <button class="btn btn-primary" id="btn-empty-add-word" onclick="document.getElementById('add-word-modal').style.display='flex'">➕ Add Your First Word</button>
+            </div>
+
+            <!-- 3D Flashcard Scene -->
+            <div class="flashcard-scene" id="flashcard-scene-wrapper">
+              <div class="flashcard-card" id="flashcard-element" onclick="vocabStudio.flipCard()" title="Click to flip card">
+                
+                <!-- CARD FRONT (PROMPT & BASIC TERM) -->
+                <div class="flashcard-face flashcard-front">
+                  <div class="card-face-header">
+                    <span class="card-badge-category" id="card-front-category">Category</span>
+                    <span id="card-front-mastery"><span class="status-badge">New</span></span>
+                  </div>
+                  <div class="card-prompt-wrapper">
+                    <div class="card-prompt-label">Target Prompt:</div>
+                    <div class="card-prompt-text" id="card-front-prompt">Replace: "Very important"</div>
+                    <div class="card-cue-arrow">&darr;</div>
+                    <div class="card-cue-word" id="card-front-word">Click to Reveal C1 Term</div>
+                  </div>
+                  <div class="card-face-footer">
+                    <span class="flip-hint">👆 Click or press <strong>[Space]</strong> to flip</span>
+                  </div>
+                </div>
+
+                <!-- CARD BACK (ADVANCED C1 TERM, IPA, DEF, EXAMPLE) -->
+                <div class="flashcard-face flashcard-back">
+                  <div class="card-face-header">
+                    <span class="card-badge-category" id="card-back-category">Adjective</span>
+                    <div class="card-face-actions">
+                      <button class="card-action-btn" id="card-speak-btn" title="Listen to Native Pronunciation">🔊 Listen</button>
+                      <button class="card-action-btn" id="card-bookmark-btn" title="Toggle Bookmark">⭐ Bookmark</button>
+                    </div>
+                  </div>
+                  <div class="card-back-main">
+                    <div class="adv-term-large" id="card-back-word">Paramount / Pivotal</div>
+                    <div class="adv-ipa-styled" id="card-back-ipa">/ˈpær.ə.maʊnt/</div>
+                    <div class="card-def-styled" id="card-back-def">More important than anything else; supreme in urgency or significance.</div>
+                    <div class="card-example-box" id="card-back-example">"Maintaining user privacy and security is paramount in our architecture."</div>
+                  </div>
+                  <div class="card-rating-section">
+                    <span class="rating-label">Rate your recall:</span>
+                    <div class="rating-buttons-group">
+                      <button class="rating-btn btn-learning" onclick="event.stopPropagation(); vocabStudio.rateCard('learning')" title="Review again soon (1)">
+                        🔴 Need Practice <kbd>1</kbd>
+                      </button>
+                      <button class="rating-btn btn-familiar" onclick="event.stopPropagation(); vocabStudio.rateCard('familiar')" title="Getting familiar (2)">
+                        🟡 Familiar <kbd>2</kbd>
+                      </button>
+                      <button class="rating-btn btn-mastered" onclick="event.stopPropagation(); vocabStudio.rateCard('mastered')" title="Mastered! +15 XP (3)">
+                        🟢 Mastered <kbd>3</kbd>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Flashcard Navigation Controls Bar -->
+            <div class="flashcard-controls" id="flashcard-controls-bar">
+              <button class="btn btn-secondary" onclick="vocabStudio.prevCard()" title="Previous card (Left Arrow)">
+                &larr; Previous
+              </button>
+              <button class="btn btn-primary btn-flip-cta" onclick="vocabStudio.flipCard()" title="Flip card (Spacebar)">
+                🔄 Flip Card
+              </button>
+              <button class="btn btn-secondary" onclick="vocabStudio.nextCard()" title="Next card (Right Arrow)">
+                Next &rarr;
+              </button>
+            </div>
+            <div class="flashcard-keyboard-tips">
+              <span>⌨️ <strong>Shortcuts:</strong> <code>[Space]</code> Flip Card &nbsp;•&nbsp; <code>[&larr;]</code> Previous &nbsp;•&nbsp; <code>[&rarr;]</code> Next &nbsp;•&nbsp; <code>[1, 2, 3]</code> Rate Recall</span>
+            </div>
+          </div>
+
+          <!-- SUBVIEW 2: VOCABULARY MATRIX EXPLORER -->
+          <div class="vocab-subview" id="vocab-view-matrix">
+            <div class="matrix-filter-bar">
+              <div class="matrix-filter-chips">
+                <button class="matrix-filter-pill active" data-filter="all">All Expressions</button>
+                <button class="matrix-filter-pill" data-filter="c1">🌟 C1 Upgrades</button>
+                <button class="matrix-filter-pill" data-filter="collocations">🤝 Collocations</button>
+                <button class="matrix-filter-pill" data-filter="esl">⚠️ ESL Traps</button>
+                <button class="matrix-filter-pill" data-filter="saved">⭐ Saved Words</button>
+              </div>
+              <div class="matrix-search-wrap">
+                <input type="text" id="vocab-search-input" class="search-input" placeholder="Search a word, meaning, or prompt (e.g. 'difficult', 'remember')...">
+              </div>
+            </div>
+            <div class="vocab-matrix" id="vocab-cards-grid">
+              <!-- Populated via FlashcardStudio -->
+            </div>
+          </div>
+
+          <!-- SUBVIEW 3: COLLOCATION CHALLENGE QUIZ -->
+          <div class="vocab-subview" id="vocab-view-quiz">
+            <div id="colloc-quiz-container">
+              <!-- Populated via FlashcardStudio -->
+            </div>
           </div>
         </section>
 
@@ -821,12 +980,60 @@
   <div id="word-definition-popover" class="word-popover" style="display:none;">
     <div class="popover-header">
       <strong id="popover-word">Word</strong>
-      <button class="popover-speak-btn" id="popover-speak-btn">🔊</button>
-      <button class="popover-close-btn" id="popover-close-btn">✕</button>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button class="popover-speak-btn" id="popover-speak-btn" title="Pronounce word">🔊</button>
+        <button class="popover-bookmark-btn" id="popover-bookmark-btn" title="Save to Flashcards Deck">⭐ Bookmark</button>
+        <button class="popover-close-btn" id="popover-close-btn">✕</button>
+      </div>
     </div>
     <div class="popover-phonetic" id="popover-phonetic">/wɜːd/</div>
     <div class="popover-def" id="popover-def">Definition will appear here...</div>
     <div class="popover-example" id="popover-example">"Example sentence."</div>
+  </div>
+
+  <!-- Custom Word Creator Modal -->
+  <div class="modal-backdrop" id="add-word-modal" style="display:none;">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <div>
+          <h3>➕ Add Custom Flashcard</h3>
+          <p class="modal-subtitle" style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">Build your personal spaced repetition vocabulary deck</p>
+        </div>
+        <button class="modal-close" id="btn-close-add-word">✕</button>
+      </div>
+      <form id="form-add-word">
+        <div class="modal-body" style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+          <div class="form-group">
+            <label for="new-word-term">Advanced Word or Expression: *</label>
+            <input type="text" id="new-word-term" class="text-input" placeholder="e.g. Scrutinize, Bear in mind" required>
+          </div>
+          <div class="form-group">
+            <label for="new-word-basic">Basic Equivalent / Prompt: *</label>
+            <input type="text" id="new-word-basic" class="text-input" placeholder="e.g. Examine carefully, Remember" required>
+          </div>
+          <div class="form-group">
+            <label for="new-word-ipa">IPA Phonetic Pronunciation (Optional):</label>
+            <input type="text" id="new-word-ipa" class="text-input" placeholder="e.g. /ˈskruː.tɪ.naɪz/">
+          </div>
+          <div class="form-group">
+            <label for="new-word-def">Clear Definition: *</label>
+            <textarea id="new-word-def" class="text-input" rows="2" placeholder="Explain the exact nuance and usage..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="new-word-example">Example Sentence: *</label>
+            <textarea id="new-word-example" class="text-input" rows="2" placeholder="Provide a natural native sentence demonstrating context..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="new-word-category">Category / Part of Speech:</label>
+            <input type="text" id="new-word-category" class="text-input" placeholder="e.g. Verb, Idiom, Collocation, Business">
+          </div>
+        </div>
+        <div class="modal-footer" style="padding:14px 20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-add-word">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save to Flashcards</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Goals & Streak Details Modal -->
@@ -882,6 +1089,13 @@
                 <span class="goal-task-sub">Complete conversational turns in realistic scenarios (+30 XP)</span>
               </div>
             </div>
+            <div class="goal-task-item" onclick="app.switchTab('vocabulary'); goalsManager.closeGoalsModal();">
+              <span style="font-size:1.2rem;">🗂️</span>
+              <div class="goal-task-info">
+                <span class="goal-task-title">Vocab &amp; Flashcards SRS Drill</span>
+                <span class="goal-task-sub">Practice active recall flashcards or collocation quiz (+25 XP)</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -900,14 +1114,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="scripts/database.js?v=6"></script>
-  <script src="scripts/analyzer.js?v=6"></script>
-  <script src="scripts/ai-service.js?v=6"></script>
-  <script src="scripts/goals.js?v=6"></script>
-  <script src="scripts/writing.js?v=6"></script>
-  <script src="scripts/speaking.js?v=6"></script>
-  <script src="scripts/reading.js?v=6"></script>
-  <script src="scripts/dialogue.js?v=6"></script>
-  <script src="scripts/app.js?v=6"></script>
+  <script src="scripts/database.js?v=7"></script>
+  <script src="scripts/analyzer.js?v=7"></script>
+  <script src="scripts/ai-service.js?v=7"></script>
+  <script src="scripts/goals.js?v=7"></script>
+  <script src="scripts/writing.js?v=7"></script>
+  <script src="scripts/speaking.js?v=7"></script>
+  <script src="scripts/reading.js?v=7"></script>
+  <script src="scripts/dialogue.js?v=7"></script>
+  <script src="scripts/flashcards.js?v=7"></script>
+  <script src="scripts/app.js?v=7"></script>
 </body>
 </html>

@@ -33,7 +33,8 @@ class GoalsManager {
         writing: false,
         speaking: false,
         reading: false,
-        dialogue: false
+        dialogue: false,
+        vocabulary: false
       },
       weeklyHistory: this.generateInitialWeek(todayStr, 4)
     };
@@ -95,7 +96,8 @@ class GoalsManager {
         writing: false,
         speaking: false,
         reading: false,
-        dialogue: false
+        dialogue: false,
+        vocabulary: false
       };
 
       // Rotate weekly history
@@ -172,7 +174,8 @@ class GoalsManager {
       writing: 'Writing Lab',
       speaking: 'Speaking Studio',
       reading: 'Reading Lounge',
-      dialogue: 'Roleplay Partner'
+      dialogue: 'Roleplay Partner',
+      vocabulary: 'Vocab & Flashcards'
     };
     return map[key] || key;
   }
@@ -198,7 +201,7 @@ class GoalsManager {
     const streakSubEl = document.querySelector('.streak-sub');
     if (streakSubEl) {
       const completedCount = this.getTodayCompletedCount();
-      streakSubEl.innerText = `${completedCount}/4 Daily Goals Complete · ${this.data.xp} XP`;
+      streakSubEl.innerText = `${completedCount}/${this.getTotalTasksCount()} Daily Goals Complete · ${this.data.xp} XP`;
     }
 
     // 2. Dashboard Tracker Card (if present)
@@ -213,7 +216,7 @@ class GoalsManager {
     if (goalStreakBadge) goalStreakBadge.innerText = `${this.data.streak} Days`;
 
     // 3. Daily task checklist checkboxes in dashboard/modal
-    ['writing', 'speaking', 'reading', 'dialogue'].forEach(task => {
+    ['writing', 'speaking', 'reading', 'dialogue', 'vocabulary'].forEach(task => {
       const checkEl = document.getElementById(`goal-check-${task}`);
       const rowEl = document.getElementById(`goal-row-${task}`);
       if (checkEl) {

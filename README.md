@@ -43,13 +43,23 @@ Fluently is a modern web application designed for **intermediate English learner
 - **Speech & Text Input**: Respond by typing or hands-free voice transcription.
 - **Real-Time Sentence Fixes**: Inspects and corrects every message you send before continuing.
 
-### 📚 5. B2 → C1 Power Vocabulary Booster
-- Searchable matrix of high-impact vocabulary upgrades with phonetic IPA spelling and audio pronunciations.
+### 🗂️ 5. Vocab & Flashcards SRS Studio (Active Recall & Spaced Repetition)
+- **Interactive 3D Flashcard Trainer**: Flip cards with smooth 3D perspective animations, audio pronunciation playback, IPA phonetic guides, and authentic executive example sentences.
+- **SRS Recall Rating System**: Rate recall difficulty (*🔴 Need Practice*, *🟡 Familiar*, or *🟢 Mastered*) with keyboard shortcuts (`[Space]` to flip, `[←/→]` to navigate, `[1, 2, 3]` to rate) and dynamic deck mastery percentage bars.
+- **Curated Multi-Track Decks**:
+  - 🌟 **B2 &rarr; C1 Upgrades**: 20 high-frequency upgrades (*paramount, arduous, impediment, facilitate, exemplify, bolster, scrutinize, ephemeral, lucrative, unprecedented, etc.*).
+  - 🤝 **Collocations &amp; Phrasals**: Authentic word pairings (*bear in mind, bridge the gap, shed light on, pave the way, take for granted, call into question, tip the scales, play a pivotal role*).
+  - ⚠️ **ESL Trap Buster**: Eradicate non-standard phrasing (*revert back, prepone, did not knew, passed out from college, discuss about, cope up with*).
+  - ⭐ **My Saved Words**: Personal deck populated from reading bookmarks or custom entries.
+- **Cross-Module 1-Click Bookmarking**: Bookmark any word lookup from the Reading Lounge popover directly into your personal Flashcard study queue.
+- **Custom Flashcard Creator**: Modal to create and store custom words with definitions, examples, and category tags.
+- **Collocation Challenge Quiz**: 4-choice interactive quiz with immediate rationale explanations and +20 XP rewards.
+- **Vocab Matrix Explorer**: Searchable matrix filterable by C1 Upgrades, Collocations, ESL Traps, and Saved Words with pronunciation and bookmark toggles.
 
 ### 🔥 6. Daily Goals, Streak Tracking & XP Engine
 - **Consecutive Day Streaks**: Tracks daily learning consistency with dynamic day counters and milestone tracking.
-- **Multi-Track Practice Checklist**: Seamlessly logs completions across Writing Lab, Speaking Studio, Reading Lounge, and Roleplay Partner.
-- **Dynamic XP Scoring**: Earn XP points for every practice session, quiz, drill, and dialogue turn.
+- **Multi-Track Practice Checklist**: Seamlessly logs completions across Writing Lab, Speaking Studio, Reading Lounge, Roleplay Partner, and Vocab & Flashcards.
+- **Dynamic XP Scoring**: Earn XP points for every practice session, quiz, drill, dialogue turn, and flashcard review.
 - **7-Day History Week Strip**: Visual weekly history indicators for daily targets met.
 - **Canvas Confetti Celebrations**: Lightweight confetti physics celebrate streak milestones and goal achievements.
 
@@ -82,7 +92,7 @@ Language-friend/
 ├── README.md               # Documentation & setup guide
 ├── styles/
 │   ├── main.css            # Global styling, tokens, dark/light theme, dashboard
-│   └── modules.css         # Component styling for Writing, Speaking, Reading, Chat, Goals
+│   └── modules.css         # Component styling for Writing, Speaking, Reading, Chat, Goals, Flashcards
 └── scripts/
     ├── database.js         # Client-side IndexedDB persistence layer
     ├── analyzer.js         # Offline rule-based NLP grammar & ESL heuristic engine
@@ -92,6 +102,7 @@ Language-friend/
     ├── speaking.js         # Speech Recognition, diff comparison & audio visualizer
     ├── reading.js          # Reading Lounge, word lookup popover & quizzes
     ├── dialogue.js         # Conversational roleplay simulator
+    ├── flashcards.js       # Vocab & Flashcards SRS Studio, collocations & custom decks
     └── app.js              # State manager, theme toggle, settings & stats tracking
 ```
 
