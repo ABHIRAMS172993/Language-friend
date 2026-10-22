@@ -366,8 +366,8 @@ Psychologists suggest scheduling intentional 'white space' into your weekly cale
 
     const percentage = Math.round((score / quiz.length) * 100);
     this.quizResultFeedback.innerHTML = `
-      <div style="margin-top:14px; padding:12px; border-radius:8px; background:${percentage === 100 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}; font-weight:700; color:#fff;">
-        Score: ${score} / ${quiz.length} (${percentage}%) - ${percentage === 100 ? '🎉 Excellent comprehension!' : '💡 Review the highlighted correct options.'}
+      <div class="reading-quiz-result ${percentage === 100 ? 'perfect' : 'partial'}">
+        Score: ${score} / ${quiz.length} (${percentage}%) &mdash; ${percentage === 100 ? '🎉 Excellent comprehension!' : '💡 Review the highlighted correct options.'}
       </div>
     `;
     if (window.goalsManager) {
